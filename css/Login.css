@@ -1,0 +1,148 @@
+/* ---------------------------------- */
+/* 1. Estilos Globales y Centrado Total */
+/* ---------------------------------- */
+body {
+    /* Fondo ligeramente azulado, similar al de la imagen */
+    background-color: #e9eef3; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.login-page {
+    /* Usamos Flexbox para centrar horizontal y verticalmente */
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center;     /* Centrado vertical */
+    min-height: 100vh;       /* Asegura que ocupe toda la altura de la vista */
+    width: 100%;
+}
+
+
+.login-card {
+    background-color: #ffffff; /* Fondo blanco para la tarjeta */
+    padding: 30px 40px;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para darle profundidad */
+    width: 100%;
+    max-width: 380px; /* Ancho fijo para la tarjeta */
+    text-align: center;
+}
+
+
+.logo-container {
+    display: flex;
+    align-items: center; /* Centrado vertical de los ítems */
+    justify-content: center; /* Centrado horizontal del grupo completo */
+    margin-bottom: 10px;
+}
+
+.site-logo {
+    /* Ajusta el tamaño de tu logo. Estos son ejemplos, ajústalos según tu imagen */
+    height: 70px; /* Altura del logo */
+    margin-right: 10px; /* Espacio entre el logo y el nombre */
+}
+
+.site-name {
+    /* Estilo para el nombre de la tienda */
+    font-size: 30px;
+    color: #4387c1; /* Color azul del nombre */
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilo para el nombre si usas el <h1> como logo temporal */
+.logo-container h1 {
+    font-size: 30px;
+    color: #4387c1; /* Color azul del logo en la imagen */
+    margin: 0;
+    padding: 0;
+    /* Si pegas una imagen de logo, ajusta aquí el estilo para la etiqueta <img> */
+}
+
+.header-message {
+    margin-bottom: 25px;
+}
+
+.header-message hr {
+    /* La línea separadora superior */
+    border: none;
+    border-top: 1px solid #c7d8e6;
+    margin-bottom: 20px;
+}
+
+.header-message p {
+    /* El texto de "Inicie Sesión" */
+    font-size: 25px;
+    color: #555;
+    background-color: #fff;
+    display: inline-block; /* Permite que el fondo blanco cubra solo el texto */
+    padding: 0 15px;
+    margin-top: -30px; /* Sube el texto para que parezca cortado por la línea */
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    overflow: hidden; /* Asegura que el borde se aplique a todo el grupo */
+}
+
+.input-group input {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    border: none;
+    padding: 12px 10px;
+    font-size: 16px;
+    outline: none; /* Quita el borde azul que aparece al hacer clic */
+}
+
+.input-group .icon {
+    background-color: #f8f9fa; /* Fondo claro para el ícono */
+    padding: 12px 12px;
+    color: #495057; /* Color del ícono */
+    border-left: 1px solid #ced4da;
+}
+
+.input-group {
+    position: relative;
+    border: 1px solid #ced4da;
+}
+
+.input-group input {
+    /* Ajustamos el padding a la izquierda para el espacio del ícono */
+    padding: 12px 15px 12px 40px; 
+}
+
+.input-group .icon {
+    /* Posicionamos el ícono encima del input, a la izquierda */
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: #6c757d; /* Color gris suave */
+    background: none; /* Sin fondo */
+    border: none; /* Sin borde de separación */
+}
+
+
+.btn-ingresar {
+    width: 100%;
+    background-color: #3598db; /* Azul fuerte, similar al de la imagen */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-ingresar:hover {
+    background-color: #2c81bf; /* Un azul un poco más oscuro al pasar el ratón */
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario - MegaCel's</title>
+    <link rel="stylesheet" href="/css/Registro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-content">
+            <span class="system-title">MegaCel's Inventario</span> 
+            <nav class="user-nav">
+                <a href="/Html/Inventario.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Volver a Iniciar Sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main-content-container">
+        
+        <div class="form-card">
+            <h2 class="form-title">
+                <i class="fas fa-user-plus"></i> Registrar Nuevo Usuario
+            </h2>
+
+            <form id="register-form" action="/Backend/register.php" method="POST" enctype="multipart/form-data">
+                
+                <div class="form-row">
+                    <label for="nombre_completo">Nombre Completo</label>
+                    <input type="text" id="nombre_completo" name="nombre_completo" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="username">Nombre de Usuario</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-row">
+                    <label for="confirm_password">Confirmar Contraseña</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol" required>
+                        <option value="cliente">Cliente</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
+                </div>
+
+               <div class="form-row form-photo-upload">
+                    <label>Foto de Perfil</label>
+                    <div class="avatar-placeholder">
+                        <img id="avatar-preview" src="img/default-avatar.png" alt="Previsualización de Perfil" class="avatar-preview">
+                    </div>
+                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" style="display: none;">
+                    <label for="foto_perfil" class="btn-file-select">Seleccionar archivo</label>
+                    <span id="file-name-display" class="file-name-display">Ningún archivo seleccionado</span>
+               </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="button" class="btn-cancelar" onclick="window.location.href='index.html'">Cancelar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+   <div class="main-content-container">
+        </div>
+    
+    <footer class="main-footer">
+        <p>Copyright © 2024 - MegaCel's.</p>
+    </footer>
+    
+    <script src="/javascript/registro.js"></script>
+</body>
+</html>
