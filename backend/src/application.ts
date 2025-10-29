@@ -4,13 +4,17 @@ import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
+import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
+import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
 
-export class BackendApplication extends BootMixin(RestApplication) {
+export class BackendApplication extends BootMixin(
+  ServiceMixin(RepositoryMixin(RestApplication)),
+) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
@@ -33,6 +37,21 @@ export class BackendApplication extends BootMixin(RestApplication) {
         // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
         extensions: ['.controller.js'],
+        nested: true,
+      },
+      repositories: {
+        dirs: ['repositories'],
+        extensions: ['.repository.js'],
+        nested: true,
+      },
+      datasources: {
+        dirs: ['datasources'],
+        extensions: ['.datasource.js'],
+        nested: true,
+      },
+      models: {
+        dirs: ['models'],
+        extensions: ['.model.js'],
         nested: true,
       },
     };

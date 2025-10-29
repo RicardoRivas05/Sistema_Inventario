@@ -70,10 +70,8 @@ export class UsuarioController {
       },
     },
   })
-  async find(
-    @param.filter(Usuario) filter?: Filter<Usuario>,
-  ): Promise<Usuario[]> {
-    return this.usuarioRepository.find(filter);
+  async find(): Promise<Usuario[]> {
+    return this.usuarioRepository.find();
   }
 
   @patch('/usuarios')
