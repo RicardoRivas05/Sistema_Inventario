@@ -103,9 +103,9 @@ export class Productos extends Entity {
   @property({
     type: 'string',
     jsonSchema: {nullable: true},
-    length: 80,
+    length: 300,
     generated: false,
-    mssql: {columnName: 'descripcion', dataType: 'varchar', dataLength: 80, dataPrecision: null, dataScale: null, nullable: 'YES', generated: false},
+    mssql: {columnName: 'descripcion', dataType: 'varchar', dataLength: 300, dataPrecision: null, dataScale: null, nullable: 'YES', generated: false},
   })
   descripcion?: string;
 

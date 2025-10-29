@@ -5,3 +5,4 @@ export * from './usuario.controller';
 export * from './control-inventario.controller';
 export * from './ventas.controller';
 export * from './detalle-ventas.controller';
+export * from './productos.controller';
