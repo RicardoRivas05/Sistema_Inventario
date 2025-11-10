@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Ventas - MegaCel's</title>
+  <link rel="stylesheet" href="/css/Ventas.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-content">
+      <span class="system-title">MegaCel's Inventario</span>
+      <nav class="user-nav">
+        <a href="/Html/Inventario.html" class="nav-link">
+          <i class="fas fa-home"></i> Inicio
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content-container">
+    <div class="ventas-container">
+      <h2 class="ventas-title"><i class="fas fa-cash-register"></i> Historial de Ventas</h2>
+
+      <div class="tabla-ventas">
+        <table id="tabla-ventas">
+          <thead>
+            <tr>
+              <th>ID Venta</th>
+              <th>Fecha</th>
+              <th>Total (L.)</th>
+              <th>ID Cliente</th>
+              <th>ID Usuario</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="7" class="loading">Cargando ventas...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>Copyright © 2024 - MegaCel's.</p>
+  </footer>
+
+  <script src="/javascript/ventas.js"></script>
+</body>
+</html>
