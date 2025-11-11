@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Tienda de Celulares</title>
+    <link rel="stylesheet" href="/Sistema_Inventario/frontend/css/Reporte.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Dashboard - Tiendas MegasCel's</h1>
+</header>
+
+<div class="filters">
+    <select id="filtroMes">
+        <option value="all">Todos los Meses</option>
+        <option value="1">Enero</option>
+        <option value="2">Febrero</option>
+        <option value="3">Marzo</option>
+        <option value="4">Abril</option>
+        <option value="5">Mayo</option>
+    </select>
+
+    <select id="filtroMarca">
+        <option value="all">Todas las Marcas</option>
+        <option value="Apple">Apple</option>
+        <option value="Samsung">Samsung</option>
+        <option value="Xiaomi">Xiaomi</option>
+        <option value="Motorola">Motorola</option>
+    </select>
+</div>
+
+<div class="dashboard">
+    <div class="card">
+        <h2>Ventas por Mes</h2>
+        <canvas id="ventasMes"></canvas>
+    </div>
+    <div class="card">
+        <h2>Productos Más Vendidos</h2>
+        <canvas id="productosTop"></canvas>
+    </div>
+    <div class="card">
+        <h2>Ventas por Marca</h2>
+        <canvas id="ventasMarca"></canvas>
+    </div>
+    <div class="card">
+        <h2>Stock Actual</h2>
+        <canvas id="stock"></canvas>
+    </div>
+</div>
+
+<script src="/Sistema_Inventario/frontend/javascript/Reporte.js"></script>
+</body>
+</html>
