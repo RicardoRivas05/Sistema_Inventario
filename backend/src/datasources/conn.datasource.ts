@@ -8,14 +8,15 @@ dotenv.config();
 const config = {
   name: 'conn',
   connector: 'mssql',
-  database: process.env.NAME_DB || '',
+  database: process.env.NAME_DB || 'celulares',
   port: parseInt(process.env.PORT_DB || '1433'),
-  host: process.env.HOST_DB || 'localhost',
+  host: process.env.HOST_DB || 'YAHIRFER2003',
   user: process.env.USER_DB || 'sa',
-  password: process.env.PASSWORD_DB || '',
+  password: process.env.PASSWORD_DB || '12345',
   requestTimeout: 30000,
   options: {
-    enableArithAbort: true,
+    encrypt: false,
+    trustServerCertificate: true,
   },
 };
 
