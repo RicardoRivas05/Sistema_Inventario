@@ -1,63 +1,52 @@
-/* ---------------------------------- */
-/* 1. Estilos Globales y Centrado Total */
-/* ---------------------------------- */
 body {
-    /* Fondo ligeramente azulado, similar al de la imagen */
-    background-color: #e9eef3; 
+    background-color: #e9eef3;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
 .login-page {
-    /* Usamos Flexbox para centrar horizontal y verticalmente */
     display: flex;
-    justify-content: center; /* Centrado horizontal */
-    align-items: center;     /* Centrado vertical */
-    min-height: 100vh;       /* Asegura que ocupe toda la altura de la vista */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     width: 100%;
 }
 
-
 .login-card {
-    background-color: #ffffff; /* Fondo blanco para la tarjeta */
+    background-color: #ffffff;
     padding: 30px 40px;
     border-radius: 5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para darle profundidad */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 380px; /* Ancho fijo para la tarjeta */
+    max-width: 380px;
     text-align: center;
 }
 
-
 .logo-container {
     display: flex;
-    align-items: center; /* Centrado vertical de los ítems */
-    justify-content: center; /* Centrado horizontal del grupo completo */
+    align-items: center;
+    justify-content: center;
     margin-bottom: 10px;
 }
 
 .site-logo {
-    /* Ajusta el tamaño de tu logo. Estos son ejemplos, ajústalos según tu imagen */
-    height: 70px; /* Altura del logo */
-    margin-right: 10px; /* Espacio entre el logo y el nombre */
+    height: 70px;
+    margin-right: 10px;
 }
 
 .site-name {
-    /* Estilo para el nombre de la tienda */
     font-size: 30px;
-    color: #4387c1; /* Color azul del nombre */
+    color: #4387c1;
     margin: 0;
     padding: 0;
 }
 
-/* Estilo para el nombre si usas el <h1> como logo temporal */
 .logo-container h1 {
     font-size: 30px;
-    color: #4387c1; /* Color azul del logo en la imagen */
+    color: #4387c1;
     margin: 0;
     padding: 0;
-    /* Si pegas una imagen de logo, ajusta aquí el estilo para la etiqueta <img> */
 }
 
 .header-message {
@@ -65,20 +54,18 @@ body {
 }
 
 .header-message hr {
-    /* La línea separadora superior */
     border: none;
     border-top: 1px solid #c7d8e6;
     margin-bottom: 20px;
 }
 
 .header-message p {
-    /* El texto de "Inicie Sesión" */
     font-size: 25px;
     color: #555;
     background-color: #fff;
-    display: inline-block; /* Permite que el fondo blanco cubra solo el texto */
+    display: inline-block;
     padding: 0 15px;
-    margin-top: -30px; /* Sube el texto para que parezca cortado por la línea */
+    margin-top: -30px;
 }
 
 .input-group {
@@ -87,21 +74,21 @@ body {
     border: 1px solid #ced4da;
     border-radius: 4px;
     margin-bottom: 15px;
-    overflow: hidden; /* Asegura que el borde se aplique a todo el grupo */
+    overflow: hidden;
 }
 
 .input-group input {
-    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    flex-grow: 1;
     border: none;
     padding: 12px 10px;
     font-size: 16px;
-    outline: none; /* Quita el borde azul que aparece al hacer clic */
+    outline: none;
 }
 
 .input-group .icon {
-    background-color: #f8f9fa; /* Fondo claro para el ícono */
+    background-color: #f8f9fa;
     padding: 12px 12px;
-    color: #495057; /* Color del ícono */
+    color: #495057;
     border-left: 1px solid #ced4da;
 }
 
@@ -111,12 +98,10 @@ body {
 }
 
 .input-group input {
-    /* Ajustamos el padding a la izquierda para el espacio del ícono */
-    padding: 12px 15px 12px 40px; 
+    padding: 12px 15px 12px 40px;
 }
 
 .input-group .icon {
-    /* Posicionamos el ícono encima del input, a la izquierda */
     position: absolute;
     left: 0;
     top: 0;
@@ -124,15 +109,14 @@ body {
     display: flex;
     align-items: center;
     padding: 0 10px;
-    color: #6c757d; /* Color gris suave */
-    background: none; /* Sin fondo */
-    border: none; /* Sin borde de separación */
+    color: #6c757d;
+    background: none;
+    border: none;
 }
-
 
 .btn-ingresar {
     width: 100%;
-    background-color: #3598db; /* Azul fuerte, similar al de la imagen */
+    background-color: #3598db;
     color: white;
     padding: 12px;
     border: none;
@@ -144,5 +128,5 @@ body {
 }
 
 .btn-ingresar:hover {
-    background-color: #2c81bf; /* Un azul un poco más oscuro al pasar el ratón */
+    background-color: #2c81bf;
 }
