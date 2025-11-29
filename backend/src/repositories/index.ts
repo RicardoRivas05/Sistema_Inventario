@@ -5,3 +5,4 @@ export * from './detalle-ventas.repository';
 export * from './productos.repository';
 export * from './usuario.repository';
 export * from './ventas.repository';
+export * from './alerta.repository';

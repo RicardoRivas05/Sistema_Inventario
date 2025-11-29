@@ -24,7 +24,7 @@ export class JWTService{
             correo: credentials.correo,
         }
 
-        return await this.jwtService.generateToken(userProfile);
+        return this.jwtService.generateToken(userProfile);
     }
 
     

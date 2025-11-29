@@ -9,7 +9,7 @@ export class AuthController{
         public authService: AuthService
     ){}
 
-    @post('/login')
+    @post('/auth/login')
     @response(200, {
         description: 'Login usuario'
     })
