@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard - Sistema de Inventario</title>
+    
+    
+    <link rel="stylesheet" href="css/Dashboard.css">
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-boxes"></i>
+                <h1>Sistema de Inventario</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="Dashboard.html" class="active">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="Productos.html">
+                    <i class="fas fa-box"></i> Productos
+                </a>
+                <a href="Proveedores.html">
+                    <i class="fas fa-truck"></i> Proveedores
+                </a>
+                <a href="Inventario.html">
+                    <i class="fas fa-warehouse"></i> Inventario
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    
+    <main class="container">
+        
+        
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-chart-line"></i>
+                Dashboard en Tiempo Real
+            </h2>
+            <div class="update-info">
+                <span id="lastUpdate">Cargando...</span>
+                <button id="refreshBtn" class="btn-refresh" title="Actualizar datos">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+
+       
+        <div class="metrics-grid">
+            
+            
+            <div class="metric-card">
+                <div class="metric-icon blue">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="totalProductos">-</h3>
+                    <p>Total Productos</p>
+                </div>
+            </div>
+
+            
+            <div class="metric-card">
+                <div class="metric-icon green">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="valorInventario">-</h3>
+                    <p>Valor Inventario</p>
+                </div>
+            </div>
+
+            
+            <div class="metric-card">
+                <div class="metric-icon orange">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="stockBajo">-</h3>
+                    <p>Stock Bajo</p>
+                </div>
+            </div>
+
+            
+            <div class="metric-card">
+                <div class="metric-icon purple">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="metric-info">
+                    <h3 id="movimientosHoy">-</h3>
+                    <p>Movimientos Hoy</p>
+                </div>
+            </div>
+
+        </div>
+
+        
+        <div class="dashboard-grid">
+            
+            
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-exclamation-circle"></i> 
+                        Productos con Stock Bajo
+                    </h3>
+                </div>
+                <div class="section-content">
+                    <div id="stockBajoContainer" class="stock-list">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> 
+                            <span>Cargando productos...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-history"></i> 
+                        Movimientos Recientes
+                    </h3>
+                </div>
+                <div class="section-content">
+                    <div id="movimientosContainer" class="movements-list">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> 
+                            <span>Cargando movimientos...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+       
+        <div class="dashboard-section full-width">
+            <div class="section-header">
+                <h3>
+                    <i class="fas fa-chart-bar"></i> 
+                    Productos Más Movidos (Últimos 30 días)
+                </h3>
+            </div>
+            <div class="section-content">
+                <div id="chartContainer" class="chart-container">
+                    <canvas id="productosChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.js"></script>
+    
+    
+    <script src="js/api-dashboard.js"></script>
+    <script src="js/dashboard.js"></script>
+    
+</body>
+</html>
