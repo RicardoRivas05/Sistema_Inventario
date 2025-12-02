@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+  <!-- Metadatos básicos -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <!-- Título de la pestaña -->
+  <title>Usuarios - MegaCel's</title>
+
+  <link rel="stylesheet" href="../css/Admin.css" />
+    <!-- Estilos generales del panel -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+    <!-- HEADER SUPERIOR -->
+  <header class="main-header">
+    <div class="header-content">
+         <!-- Nombre del sistema -->
+      <span class="system-title">MegaCel's · Panel de Administración</span>
+       <!-- Menú de navegación principal -->
+      <nav class="user-nav">
+        <a href="Registro.html" class="nav-link">Registro</a>
+        <a href="Usuario.html" class="nav-link active">Usuarios</a>
+        <a href="Roles.html" class="nav-link">Roles</a>
+        <a href="R.Ventas.html" class="nav-link">Ventas</a>
+        <a href="Login.html" class="nav-link">Login</a>
+      </nav>
+    </div>
+  </header>
+ <!-- CONTENIDO PRINCIPAL -->
+  <main class="page-wrapper"> 
+    <!-- Tarjeta que contiene todo el módulo de usuarios -->
+    <section class="card">
+     <!-- Encabezado de la tarjeta -->  
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Usuarios</h2>
+          <p class="card-subtitle">
+            Registra usuarios, asigna uno de los roles definidos y controla su estado.
+          </p>
+        </div>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="u_nombre">Nombre Completo *</label>
+          <input type="text" id="u_nombre" placeholder="Ej: Juan Pérez" />
+        </div>
+          <!-- Usuario / alias de login -->
+        <div class="form-field">
+          <label for="u_username">Usuario *</label>
+          <input type="text" id="u_username" placeholder="Ej: jperez" />
+        </div>
+          <!-- Rol asignado (cargado desde Roles) -->
+        <div class="form-field">
+          <label for="u_rol">Rol *</label>
+          <select id="u_rol"></select>
+        </div>
+      </div>
+      <!-- ===== FORMULARIO FILA 2 ===== -->
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="u_password">Contraseña *</label>
+          <input type="password" id="u_password" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <!-- Estado del usuario -->
+        <div class="form-field">
+          <label for="u_estado">Estado *</label>
+          <select id="u_estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+         <!-- Correo opcional (más corto en CSS) -->
+        <div class="form-field">
+          <label for="u_email">Correo (opcional)* </label>
+          <input type="email" id="u_email" placeholder="correo@ejemplo.com" />
+        </div>
+      </div>
+           <!-- ===== BOTONES DEL FORMULARIO ===== -->
+      <div class="form-actions">
+        <!-- Guarda nuevo usuario o actualiza el seleccionado -->
+        <button class="btn btn-primary" id="btn-save-user" type="button">
+          <i class="fas fa-save"></i> Agregar / Actualizar
+        </button>
+         <!-- Limpia todos los campos del formulario -->
+        <button class="btn btn-secondary" id="btn-clear-user" type="button">
+          Limpiar
+        </button>
+        <!-- Mensajes de validación / éxito -->
+        <span id="user-form-message" class="form-message"></span>
+      </div>
+
+      <!-- CHEQUEO GENERAL -->
+      <div class="users-summary" id="users-summary"></div>
+
+      <!-- TABLA -->
+      <div class="table-toolbar">
+        <div>Usuarios Registrados</div>
+        <div>
+          Buscar:
+          <input type="text" id="user-search" placeholder="Nombre o usuario..." />
+        </div>
+      </div>
+       <!-- ===== TABLA DE USUARIOS (cuerpo generado por JS) ===== -->
+      <div class="users-table-wrapper">
+        <table class="data-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- filas generadas por usuarios.js -->
+          </tbody>
+        </table>
+      </div>
+       <!-- FOOTER GENERAL DEL MÓDULO -->
+      <footer class="main-footer">
+        <p>© 2025 MegaCel's · Gestión de Usuarios.</p>
+      </footer>
+
+      <script src="../javascript/Usuario.js"></script>
+</body>
+
+</html>

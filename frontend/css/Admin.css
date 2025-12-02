@@ -1,0 +1,279 @@
+body {
+  margin: 0; /* sin margen externo */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: #f5f7fb;
+  color: #000000; /* texto negro */
+  font-weight: 450; /* grosor medio */
+}
+
+/* HEADER */
+.main-header {
+  background-color: #3598db; /* azul principal */
+  border-bottom: 1px solid #e5e7eb; /* línea separadora */
+  padding: 10px 24px; /* espacio interno */
+}
+
+.header-content {
+  max-width: 1200px; /* ancho máximo centrado */
+  margin: 0 auto;
+  display: flex; /* fila */
+  justify-content: space-between; /* título izq, menú der */
+  align-items: center;
+}
+
+.system-title {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-nav .nav-link {
+  margin-left: 16px; /* separación entre links */
+  font-size: 13px; /* tamaño texto menú */
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.user-nav .nav-link:hover,
+.user-nav .nav-link.active {
+  color: #ffffff; /* mantiene blanco */
+  font-weight: 800; /* resalta activo/hover */
+}
+
+/* CONTENEDOR PÁGINA */
+
+.page-wrapper {
+  max-width: 1200px; /* ancho máximo contenido */
+  margin: 20px auto 40px;  /* margen sup/inf y centrado */
+  padding: 0 16px; /* espacio lateral interno */
+}
+
+/* CARD */
+
+.card {
+  background-color: #ffffff;
+  border-radius: 10px; /* bordes redondeados */
+  padding: 16px 18px 18px; /* espacio interno */
+  box-shadow: 0 4px 14px rgba(15,23,42,0.05); /* sombra suave */
+  border: 1px solid #e5e7eb;/* borde gris claro */
+}
+
+.card-header {
+  display: flex; /* fila */
+  justify-content: space-between; /* título vs botón */
+  align-items: center; /* centrado vertical */
+  gap: 12px; /* separación interna */
+  margin-bottom: 10px; /* separa del contenido */
+}
+
+.card-title {
+  margin: 0; /* sin margen extra */
+  font-size: 18px; /* tamaño título */
+  font-weight: 600;
+  color: #111827;
+}
+
+.card-subtitle {
+  margin: 2px 0 0; /* pequeño margen superior */
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* BOTONES */
+
+.btn {
+  display: inline-flex; /* contenido en fila centrado */
+  align-items: center; /* centra icono/texto */
+  gap: 6px; /* espacio entre icono y texto */
+  padding: 6px 12px; /* tamaño del botón */
+  border-radius: 6px; /* esquinas suaves */
+  font-size: 12px; /* texto botón */
+  font-weight: 500; /* semi-negrita */
+  border: none; /* sin borde por defecto */
+  cursor: pointer; /* mano al pasar */
+  transition: all 0.15s ease; /* animación suave */
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: #252b35;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+.btn-sm {
+  padding: 3px 8px; /* botón pequeño */
+  border-radius: 4px;
+  font-size: 10px;  /* texto más pequeño */
+}
+
+/* FORMULARIOS */
+.form-grid {
+  display: grid;  /* layout en rejilla */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columnas iguales */
+  column-gap: 25px;    /* espacio horizontal entre columnas */
+  row-gap: 15px;     /* espacio vertical entre filas */
+  margin-top: 12px; /* separación del título */
+}
+
+.form-field label {
+  display: block;  /* ocupa toda la línea */
+  font-size: 11px; /* label pequeño */
+  color: #6b7280;
+  margin-bottom: 2px; /* separa del input */
+}
+
+.form-field input,
+.form-field select {
+  width: 100%; /* ocupa toda la columna */
+  padding: 6px 8px; /* espacio interno */
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  outline: none; /* quita resaltado azul */
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: #2563eb; /* resalta campo activo */
+}
+/* Campo de correo: más corto y con mejor padding */
+#u_email {
+  max-width: 260px; /* limita ancho */
+  padding: 7px 12px; /* más aire interno */
+}
+
+#u_email::placeholder {
+  color: #9ca3af; /* placeholder gris suave */
+}
+/* Acciones formulario */
+.form-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.form-message {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #f97316;
+}
+
+/* TABLAS */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.data-table thead {
+  background-color: #f9fafb;
+}
+
+.data-table th,
+.data-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* CONTENEDOR DE TABLA DE ROLES
+   Muestra varios roles seguidos y permite scroll si hay muchos */
+.roles-table-wrapper {
+  max-height: 260px;     /* altura visible para ~8-10 roles */
+  overflow-y: auto;      /* si hay más, aparece scroll vertical */
+  margin-top: 6px;
+}
+
+/* Aseguramos que la tabla use todo el ancho dentro del contenedor */
+#rolesTable {
+  width: 100%;
+}
+
+/* Distribución columnas Roles */
+#rolesTable th:nth-child(1),
+#rolesTable td:nth-child(1) {
+  width: 25%;
+}
+
+#rolesTable th:nth-child(2),
+#rolesTable td:nth-child(2) {
+  width: 45%;
+}
+
+#rolesTable th:nth-child(3),
+#rolesTable td:nth-child(3) {
+  width: 30%;
+  white-space: nowrap;         /* botones en una sola línea */
+}
+
+#rolesTable td:nth-child(3) .btn {
+  margin-right: 4px;
+}
+
+/* ESTADOS */
+
+.badge-estado {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.badge-activo {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge-inactivo {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* BOTONES ACCIONES */
+
+.btn-edit { background-color: #eff6ff; color: #1d4ed8; }
+.btn-edit:hover { background-color: #dbeafe; }
+
+.btn-delete { background-color: #fee2e2; color: #b91c1c; }
+.btn-delete:hover { background-color: #fecaca; }
+
+.btn-toggle { background-color: #e0f2fe; color: #0369a1; }
+.btn-toggle:hover { background-color: #bae6fd; }
+
+/* FOOTER */
+
+.main-footer {
+  text-align: center;
+  font-size: 10px;
+  color: #9ca3af;
+  padding: 8px 0 14px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

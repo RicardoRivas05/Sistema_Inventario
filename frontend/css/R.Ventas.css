@@ -1,0 +1,301 @@
+/* =========================
+   RESET BÁSICO / GENERALES
+========================= */
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f5f7fb;
+    color: #000000;
+    font-weight: 450;
+}
+
+/* =========================
+   HEADER SUPERIOR
+========================= */
+.main-header {
+    background-color: #3598db;
+    /* azul principal */
+    border-bottom: 1px solid #e5e7eb;
+    padding: 10px 24px;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.system-title {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.user-nav .nav-link {
+    margin-left: 16px;
+    font-size: 13px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.user-nav .nav-link:hover,
+.user-nav .nav-link.active {
+    color: #ffffff;
+    font-weight: 800;
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+========================= */
+.page-wrapper {
+    max-width: 1200px;
+    margin: 20px auto 40px;
+    padding: 0 16px;
+}
+
+/* =========================
+   CARDS GENERALES
+========================= */
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 16px 18px 18px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 18px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.card-subtitle {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* =========================
+   TOOLBAR SUPERIOR (texto + buscador)
+========================= */
+.table-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.table-toolbar input {
+    padding: 5px 8px;
+    font-size: 11px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+/* =========================
+   FORMULARIO DE VENTA
+========================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 14px;
+    margin-top: 12px;
+}
+
+.form-field label {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 3px;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    outline: none;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+    border-color: #2563eb;
+}
+
+/* =========================
+   TABLAS (CARRITO, INVENTARIO, HISTORIAL)
+========================= */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.data-table thead {
+    background-color: #f9fafb;
+}
+
+.data-table th,
+.data-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+/* Contenedor con scroll para tablas altas */
+.table-scroll {
+    max-height: 260px;
+    overflow-y: auto;
+    margin-top: 6px;
+}
+
+/* =========================
+   BOTONES GENERALES
+========================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    background-color: #f3f4f6;
+    color: #252b35;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-sm {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+}
+
+/* Botones de acción en las filas del carrito / historial */
+.btn-row {
+    margin-right: 4px;
+}
+
+/* =========================
+   PIE DE LA VENTA (TOTAL + ACCIONES)
+========================= */
+.venta-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Bloque del total */
+.venta-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.venta-total-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.venta-total-valor {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: #111827;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Acciones del formulario (confirmar, limpiar) */
+.form-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-message {
+    font-size: 11px;
+    color: #f97316;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.main-footer {
+    text-align: center;
+    font-size: 10px;
+    color: #9ca3af;
+    padding: 8px 0 14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .venta-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
