@@ -7,11 +7,11 @@ dotenv.config();
 const config = {
   name: 'conn',
   connector: 'mssql',
-  host: process.env.DB_SERVER || 'localhost\\SQLEXPRESS',
+  host: process.env.DB_SERVER || 'RICARDOPC',
   port: Number(process.env.DB_PORT) || 1433,
-  database: process.env.DB_NAME || 'SistemaInventario',
-  user: process.env.DB_USER || '',
-  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'celulares',
+  user: process.env.DB_USER || 'sa',
+  password: process.env.DB_PASSWORD || 'elmaster05',
   options: {
     encrypt: process.env.DB_ENCRYPT === 'true',
     trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
