@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Sistema de Inventario</title>
+    <link rel="stylesheet" href="../css/productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-boxes"></i>
+                <h1>Sistema de Inventario</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="Dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="Productos.html" class="active">
+                    <i class="fas fa-box"></i> Productos
+                </a>
+                <a href="Proveedores.html">
+                    <i class="fas fa-truck"></i> Proveedores
+                </a>
+                <a href="Inventario.html">
+                    <i class="fas fa-warehouse"></i> Inventario
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        
+        <!-- Header de la página -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-box"></i>
+                Catálogo de Productos
+            </h2>
+            <p>Explora nuestro catálogo completo de productos disponibles</p>
+        </div>
+
+        <!-- Controles y filtros -->
+        <div class="controls-section">
+            <div class="view-toggle">
+                <button class="view-btn active" id="btnCardView" title="Vista de cartas">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" id="btnListView" title="Vista de lista">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+            
+            <div class="filters-section">
+                <select id="filterCategory">
+                    <option value="">Todas las categorías</option>
+                    <option value="telefonos">📱 Teléfonos</option>
+                    <option value="tablets">📟 Tablets</option>
+                    <option value="accesorios">🎧 Accesorios</option>
+                    <option value="cargadores">🔌 Cargadores</option>
+                    <option value="fundas">📱 Fundas</option>
+                    <option value="audifonos">🎮 Audífonos</option>
+                </select>
+                
+                <select id="filterStatus">
+                    <option value="">Todos los estados</option>
+                    <option value="disponible">✅ Disponible</option>
+                    <option value="agotado">❌ Agotado</option>
+                    <option value="bajo-stock">⚠️ Stock Bajo</option>
+                </select>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchProduct" placeholder="Buscar producto...">
+                </div>
+            </div>
+            
+            <button class="add-product-btn" id="btnAddProduct">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
+
+        <!-- Vista de Cartas -->
+        <div class="products-cards-container" id="cardsView">
+            <div class="cards-grid" id="productsCardsGrid">
+                <!-- Producto 1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/S23.jpg" alt="Samsung Galaxy S23">
+                        <div class="category-badge">
+                            <i class="fas fa-mobile-alt"></i> 📱 Teléfonos
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD001</div>
+                            <h3 class="product-name">Samsung Galaxy S23</h3>
+                            <p class="product-description">Smartphone con cámara profesional, 256GB, 8GB RAM, pantalla Dynamic AMOLED 2X.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 15,000</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 25
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="1">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="1">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 2 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/airpods_pro.jpg" alt="AirPods Pro">
+                        <div class="category-badge">
+                            <i class="fas fa-headphones"></i> 🎧 Accesorios
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD002</div>
+                            <h3 class="product-name">AirPods Pro 2da Gen</h3>
+                            <p class="product-description">Audífonos inalámbricos con cancelación activa de ruido y estuche de carga MagSafe.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 3,500</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount low-stock">
+                                    <i class="fas fa-exclamation-triangle"></i> 8
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-low">
+                                <i class="fas fa-exclamation-circle"></i> Stock Bajo
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="2">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="2">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 3 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/microsoft.jpg" alt="Surface Pro 9">
+                        <div class="category-badge">
+                            <i class="fas fa-tablet-alt"></i> 📟 Tablets
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD003</div>
+                            <h3 class="product-name">Microsoft Surface Pro 9</h3>
+                            <p class="product-description">Tablet convertible con Intel Core i5, 8GB RAM, 256GB SSD, pantalla táctil 13".</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 22,500</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 15
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="3">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="3">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 4 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://www.apple.com/newsroom/images/product/iphone/standard/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-hero-220907_Full-Bleed-Image.jpg.large.jpg" alt="iPhone 14 Pro">
+                        <div class="category-badge">
+                            <i class="fas fa-mobile-alt"></i> 📱 Teléfonos
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD004</div>
+                            <h3 class="product-name">iPhone 14 Pro Max</h3>
+                            <p class="product-description">iPhone con Dynamic Island, cámara de 48MP, chip A16 Bionic, 256GB, color Deep Purple.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 28,000</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 10
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="4">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="4">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 5 -->
+                <div class="product-card out-of-stock">
+                    <div class="product-image">
+                        <img src="../img/cargador.jpg" alt="Cargador Rápido">
+                        <div class="category-badge">
+                            <i class="fas fa-plug"></i> 🔌 Cargadores
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD005</div>
+                            <h3 class="product-name">Cargador Rápido 65W</h3>
+                            <p class="product-description">Cargador GaN de 65W con 3 puertos USB-C/USB-A, compatible con laptop, tablet y teléfono.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 850</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount out-of-stock">
+                                    <i class="fas fa-times-circle"></i> 0
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-unavailable">
+                                <i class="fas fa-times-circle"></i> Agotado
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="5">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="5">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 6 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/funda.jpg" alt="Funda Samsung">
+                        <div class="category-badge">
+                            <i class="fas fa-shield-alt"></i> 📱 Fundas
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD006</div>
+                            <h3 class="product-name">Funda Samsung Galaxy S23</h3>
+                            <p class="product-description">Funda protectora de silicona con diseño antichoque y soporte integrado para manos libres.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 320</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 45
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="6">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="6">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 7 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg" alt="Sony WH-1000XM5">
+                        <div class="category-badge">
+                            <i class="fas fa-headphones"></i> 🎮 Audífonos
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD007</div>
+                            <h3 class="product-name">Sony WH-1000XM5</h3>
+                            <p class="product-description">Audífonos over-ear con cancelación de ruido líder, 30 horas de batería y sonido Hi-Res.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 5,800</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount low-stock">
+                                    <i class="fas fa-exclamation-triangle"></i> 5
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-low">
+                                <i class="fas fa-exclamation-circle"></i> Stock Bajo
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="7">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="7">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 8 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/Ipad.jpg" alt="iPad Air">
+                        <div class="category-badge">
+                            <i class="fas fa-tablet-alt"></i> 📟 Tablets
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD008</div>
+                            <h3 class="product-name">iPad Air 5ta Gen</h3>
+                            <p class="product-description">Tablet Apple con chip M1, pantalla Liquid Retina de 10.9", 64GB, compatible con Apple Pencil 2.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 12,500</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 18
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="8">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="8">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 9 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../img/cable.jpg" alt="Cable USB-C">
+                        <div class="category-badge">
+                            <i class="fas fa-bolt"></i> 🔌 Cargadores
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-code">PROD009</div>
+                            <h3 class="product-name">Cable USB-C 2m</h3>
+                            <p class="product-description">Cable USB-C a USB-C de 2 metros con soporte para 100W PD y transferencia de datos 480Mbps.</p>
+                        </div>
+                        <div class="product-meta">
+                            <div class="price-info">
+                                <span class="price-label">Precio</span>
+                                <span class="product-price">L 180</span>
+                            </div>
+                            <div class="stock-info">
+                                <span class="stock-label">Stock</span>
+                                <span class="stock-amount in-stock">
+                                    <i class="fas fa-box"></i> 62
+                                </span>
+                            </div>
+                        </div>
+                        <div class="product-status">
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn btn-quick-view" data-id="9">
+                                <i class="fas fa-eye"></i> Ver
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="9">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paginación -->
+            <div class="pagination" id="cardsPagination">
+                <button class="page-btn" id="prevPageCards">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <span class="page-info" id="pageInfoCards">Página 1 de 2</span>
+                <button class="page-btn" id="nextPageCards">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Vista de Tabla (oculta por defecto) -->
+        <div class="products-table-container" id="tableView" style="display: none;">
+            <div class="table-header">
+                <h3 id="productsCount">Productos (9)</h3>
+                <div class="table-actions">
+                    <button class="btn-action" id="btnExportTable">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+            </div>
+            
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Código</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Los 9 productos en formato tabla -->
+                    <tr>
+                        <td><strong>Samsung Galaxy S23</strong></td>
+                        <td>📱 Teléfonos</td>
+                        <td><span class="product-code">PROD001</span></td>
+                        <td><span class="product-price">L 15,000</span></td>
+                        <td><span class="stock-amount in-stock">25</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>AirPods Pro 2da Gen</strong></td>
+                        <td>🎧 Accesorios</td>
+                        <td><span class="product-code">PROD002</span></td>
+                        <td><span class="product-price">L 3,500</span></td>
+                        <td><span class="stock-amount low-stock">8</span></td>
+                        <td>
+                            <span class="status-badge status-low">
+                                <i class="fas fa-exclamation-circle"></i> Stock Bajo
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="2">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Microsoft Surface Pro 9</strong></td>
+                        <td>📟 Tablets</td>
+                        <td><span class="product-code">PROD003</span></td>
+                        <td><span class="product-price">L 22,500</span></td>
+                        <td><span class="stock-amount in-stock">15</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="3">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="3">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>iPhone 14 Pro Max</strong></td>
+                        <td>📱 Teléfonos</td>
+                        <td><span class="product-code">PROD004</span></td>
+                        <td><span class="product-price">L 28,000</span></td>
+                        <td><span class="stock-amount in-stock">10</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="4">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="4">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cargador Rápido 65W</strong></td>
+                        <td>🔌 Cargadores</td>
+                        <td><span class="product-code">PROD005</span></td>
+                        <td><span class="product-price">L 850</span></td>
+                        <td><span class="stock-amount out-of-stock">0</span></td>
+                        <td>
+                            <span class="status-badge status-unavailable">
+                                <i class="fas fa-times-circle"></i> Agotado
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="5">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="5">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Funda Samsung Galaxy S23</strong></td>
+                        <td>📱 Fundas</td>
+                        <td><span class="product-code">PROD006</span></td>
+                        <td><span class="product-price">L 320</span></td>
+                        <td><span class="stock-amount in-stock">45</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="6">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="6">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sony WH-1000XM5</strong></td>
+                        <td>🎮 Audífonos</td>
+                        <td><span class="product-code">PROD007</span></td>
+                        <td><span class="product-price">L 5,800</span></td>
+                        <td><span class="stock-amount low-stock">5</span></td>
+                        <td>
+                            <span class="status-badge status-low">
+                                <i class="fas fa-exclamation-circle"></i> Stock Bajo
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="7">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="7">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>iPad Air 5ta Gen</strong></td>
+                        <td>📟 Tablets</td>
+                        <td><span class="product-code">PROD008</span></td>
+                        <td><span class="product-price">L 12,500</span></td>
+                        <td><span class="stock-amount in-stock">18</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="8">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="8">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cable USB-C 2m</strong></td>
+                        <td>🔌 Cargadores</td>
+                        <td><span class="product-code">PROD009</span></td>
+                        <td><span class="product-price">L 180</span></td>
+                        <td><span class="stock-amount in-stock">62</span></td>
+                        <td>
+                            <span class="status-badge status-available">
+                                <i class="fas fa-check-circle"></i> Disponible
+                            </span>
+                        </td>
+                        <td>
+                            <button class="card-action-btn btn-quick-view" data-id="9">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="card-action-btn btn-edit-card" data-id="9">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Paginación -->
+            <div class="pagination" id="tablePagination">
+                <button class="page-btn" id="prevPageTable">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <span class="page-info" id="pageInfoTable">Página 1 de 1</span>
+                <button class="page-btn" id="nextPageTable">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="quick-actions">
+            <button class="quick-btn" id="btnExportAll">
+                <i class="fas fa-file-excel"></i>
+                <span>Exportar Todo</span>
+            </button>
+            <button class="quick-btn" id="btnPrintCatalog">
+                <i class="fas fa-print"></i>
+                <span>Imprimir Catálogo</span>
+            </button>
+            <button class="quick-btn" id="btnRefreshData">
+                <i class="fas fa-sync-alt"></i>
+                <span>Actualizar</span>
+            </button>
+            <div class="update-info">
+                <small>Actualizado: <span id="lastUpdate">Hoy, 10:30 AM</span></small>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal para agregar/editar producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Producto</h3>
+                <button class="btn-close" id="btnCloseModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-group">
+                        <label for="productName">Nombre del Producto *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productCode">Código *</label>
+                            <input type="text" id="productCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">Categoría *</label>
+                            <select id="productCategory" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="telefonos">📱 Teléfonos</option>
+                                <option value="tablets">📟 Tablets</option>
+                                <option value="accesorios">🎧 Accesorios</option>
+                                <option value="cargadores">🔌 Cargadores</option>
+                                <option value="fundas">📱 Fundas</option>
+                                <option value="audifonos">🎮 Audífonos</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="purchasePrice">Precio Compra (L) *</label>
+                            <input type="number" id="purchasePrice" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="salePrice">Precio Venta (L) *</label>
+                            <input type="number" id="salePrice" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="initialStock">Stock Inicial *</label>
+                            <input type="number" id="initialStock" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="minStock">Stock Mínimo *</label>
+                            <input type="number" id="minStock" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">Descripción</label>
+                        <textarea id="productDescription" rows="3" placeholder="Describe las características del producto..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productImage">URL de Imagen (opcional)</label>
+                        <input type="text" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small class="form-help">Pega la URL de una imagen del producto</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productStatus">Estado *</label>
+                        <select id="productStatus" required>
+                            <option value="activo">✅ Activo</option>
+                            <option value="inactivo">❌ Inactivo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                        <button type="button" class="btn-cancel" id="btnCancelModal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de vista rápida -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content quick-view-content">
+            <div class="modal-header">
+                <h3 id="quickViewTitle">Detalles del Producto</h3>
+                <button class="btn-close" id="btnCloseQuickView">&times;</button>
+            </div>
+            <div class="modal-body" id="quickViewBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/productos-cards.js"></script>
+    <script src="../js/funcionalidades.js"></script>
+</body>
+</html>
