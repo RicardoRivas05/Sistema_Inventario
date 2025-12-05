@@ -25,7 +25,7 @@
                 <i class="fas fa-user-plus"></i> Registrar Nuevo Usuario
             </h2>
 
-            <form id="register-form" action="../Backend/register.php" method="POST" enctype="multipart/form-data">
+            <form id="register-form" action="" method="POST" enctype="multipart/form-data">
                 
                 <div class="form-row">
                     <label for="nombre_completo">Nombre Completo</label>
@@ -55,15 +55,10 @@
                     </select>
                 </div>
 
-               <div class="form-row form-photo-upload">
-                    <label>Foto de Perfil</label>
-                    <div class="avatar-placeholder">
-                        <img id="avatar-preview" src="../img/default-avatar.png" alt="Previsualización de Perfil" class="avatar-preview">
-                    </div>
-                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" style="display: none;">
-                    <label for="foto_perfil" class="btn-file-select">Seleccionar archivo</label>
-                    <span id="file-name-display" class="file-name-display">Ningún archivo seleccionado</span>
-               </div>
+                <div class="form-row">
+                    <label for="correo">Correo electronico</label>
+                    <input type="email" id="correo" name="correo" required>
+                </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn-guardar">Guardar</button>
@@ -85,3 +80,4 @@
     <script src="../javascript/registro.js"></script>
 </body>
 </html>
+    
