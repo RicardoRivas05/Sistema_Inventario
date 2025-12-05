@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proveedores - MegaCel's Inventario</title>
+    <link rel="stylesheet" href="../css/Proveedores.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="system-title">
+                <i class="fas fa-mobile-alt"></i> MEGACEL'S - Sistema de Inventario
+            </div>
+            <nav class="user-nav">
+                <a href="../Html/Inventario.html" class="nav-link">
+                    <i class="fas fa-box"></i> Inventario
+                </a>
+                <a href="../Html/Proveedores.html" class="nav-link active">
+                    <i class="fas fa-truck"></i> Proveedores
+                </a>
+                <a href="../Html/Login.html" class="nav-link active">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="main-content-container">
+        <div class="content-card">
+            
+            <div class="page-header">
+                <h2 class="page-title">
+                    <i class="fas fa-truck"></i> Gestión de Proveedores
+                </h2>
+                <button class="btn-agregar" id="btn-nuevo-proveedor">
+                    <i class="fas fa-plus"></i> Agregar Proveedor
+                </button>
+            </div>
+
+            
+            <div class="search-bar">
+                <div class="search-input-group">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Buscar por nombre, teléfono o correo...">
+                </div>
+            </div>
+
+            
+            <div class="table-container">
+                <table class="table-proveedores">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-proveedores-body">
+                        
+                        <tr>
+                            <td colspan="6" class="loading">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando proveedores...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+    <div id="modal-proveedor" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">
+                    <i class="fas fa-plus-circle"></i> Agregar Proveedor
+                </h3>
+                <button class="btn-close" id="btn-cerrar-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="form-proveedor">
+                <input type="hidden" id="proveedor-id">
+
+                <div class="form-row">
+                    <label for="nombre">Nombre: <span class="required">*</span></label>
+                    <input type="text" id="nombre" name="nombre" maxlength="100" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="telefono">Teléfono: <span class="required">*</span></label>
+                    <input type="text" id="telefono" name="telefono" maxlength="20" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="correo">Correo: <span class="required">*</span></label>
+                    <input type="email" id="correo" name="correo" maxlength="100" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" maxlength="150">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn-cancelar" id="btn-cancelar-form">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2024 MegaCel's - Sistema de Inventario. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="../javascript/api-proveedores.js"></script>
+    <script src="../javascript/proveedores.js"></script>
+</body>
+</html>

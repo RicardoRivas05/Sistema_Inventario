@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Inventario - Sistema de Inventario</title>
+    <link rel="stylesheet" href="../css/Inventario.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-boxes"></i>
+                <h1>Sistema de Inventario</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="Dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="Productos.html">
+                    <i class="fas fa-box"></i> Productos
+                </a>
+                <a href="Proveedores.html">
+                    <i class="fas fa-truck"></i> Proveedores
+                </a>
+                <a href="Inventario.html" class="active">
+                    <i class="fas fa-warehouse"></i> Inventario
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        
+        <!-- Header de la página -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-warehouse"></i>
+                Gestión de Inventario
+            </h2>
+            <p>Administra y controla el inventario de productos</p>
+        </div>
+
+        <!-- Filtros y búsqueda -->
+        <div class="filters-section">
+            <div class="data-title">
+                Datos productos
+            </div>
+            <div class="filter-controls">
+                <select id="filterCategory">
+                    <option value="">Todas las categorías</option>
+                    <option value="telefonos">Teléfonos</option>
+                    <option value="accesorios">Accesorios</option>
+                    <option value="tablets">Tablets</option>
+                    <option value="cargadores">Cargadores</option>
+                    <option value="fundas">Fundas</option>
+                </select>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchProduct" placeholder="Descubre certificado...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="products-table-container">
+            <div class="table-header">
+                <h3>10 Productos</h3>
+                <button class="add-product-btn" id="btnAddProduct">
+                    <i class="fas fa-plus"></i> Agregar Producto
+                </button>
+            </div>
+            
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Mínimo</th>
+                        <th>Precio Unitario</th>
+                        <th>Valor Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Datos cargados dinámicamente -->
+                    <tr id="loadingRow">
+                        <td colspan="9" class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Cargando productos...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3><i class="fas fa-box"></i> Total Productos</h3>
+                <div class="stat-value" id="totalProducts">0</div>
+                <div class="stat-subtitle">En inventario</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Stock Bajo</h3>
+                <div class="stat-value" id="lowStock">0</div>
+                <div class="stat-subtitle">Productos críticos</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3><i class="fas fa-dollar-sign"></i> Valor Total</h3>
+                <div class="stat-value" id="totalValue">L0.00</div>
+                <div class="stat-subtitle">Valor del inventario</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3><i class="fas fa-ban"></i> Sin Stock</h3>
+                <div class="stat-value" id="outOfStock">0</div>
+                <div class="stat-subtitle">Agotados</div>
+            </div>
+        </div>
+
+        <!-- Acciones adicionales -->
+        <div class="action-section">
+            <div class="action-title">
+                Consulte incluido
+            </div>
+            
+            <div class="action-buttons-bottom">
+                <button class="btn-export" id="btnExport">
+                    <i class="fas fa-file-export"></i> Exportar (CSV)
+                </button>
+                <button class="btn-print" id="btnPrint">
+                    <i class="fas fa-print"></i> Imprimir Reporte
+                </button>
+            </div>
+            
+            <div class="update-info">
+                <small>Última actualización: <span id="lastUpdate">Hoy, 10:30 AM</span></small>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal para agregar/editar producto -->
+    <div id="productModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <!-- Contenido del modal -->
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <p>© 2025 MegaCel's · Registro de Ventas.</p>
+    </footer>
+
+     <script src="../js/inventario.js"></script>
+</body>
+</html>

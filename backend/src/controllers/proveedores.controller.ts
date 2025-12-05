@@ -70,10 +70,8 @@ export class ProveedoresController {
       },
     },
   })
-  async find(
-    @param.filter(Proveedores) filter?: Filter<Proveedores>,
-  ): Promise<Proveedores[]> {
-    return this.proveedoresRepository.find(filter);
+  async find(): Promise<Proveedores[]> {
+    return this.proveedoresRepository.find();
   }
 
   @patch('/proveedores')
