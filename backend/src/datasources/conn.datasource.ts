@@ -7,11 +7,11 @@ dotenv.config();
 const config = {
   name: 'conn',
   connector: 'mssql',
-  host: process.env.DB_SERVER || 'RICARDOPC',
+  host: process.env.DB_SERVER || 'YAHIRFER2003',
   port: Number(process.env.DB_PORT) || 1433,
   database: process.env.DB_NAME || 'celulares',
   user: process.env.DB_USER || 'sa',
-  password: process.env.DB_PASSWORD || 'elmaster05',
+  password: process.env.DB_PASSWORD || '12345',
   options: {
     encrypt: process.env.DB_ENCRYPT === 'true',
     trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
