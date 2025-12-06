@@ -1,3 +1,5 @@
+import { globalService } from "../services/global.service.js";
+
 
 let proveedoresData = [];
 let proveedorEditando = null;
@@ -7,6 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     inicializarEventos();
     cargarProveedores();
 });
+
+
+async function getProveedores() {
+    try {
+        const proveedores = await globalService.get('/proveedores');        
+        return {
+            success: true,
+            data: proveedores
+        };
+
+    } catch (error) {
+        console.error("Error al cargar proveedores:", error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
 
 
 function inicializarEventos() {
@@ -34,8 +55,8 @@ function inicializarEventos() {
 
 async function cargarProveedores() {
     mostrarCargando();
-    
-    const resultado = await obtenerProveedores();
+    console.log("Cargando proveedores...");
+    const resultado = await getProveedores();
     
     if (resultado.success) {
         proveedoresData = resultado.data;
