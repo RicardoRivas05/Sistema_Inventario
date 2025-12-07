@@ -1,6 +1,136 @@
 
 let proveedoresData = [];
 let proveedorEditando = null;
+const API_BASE_URL = 'http://localhost:3000';
+
+
+async function obtenerProveedores() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proveedores`);
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+        }
+        
+        const data = await response.json();
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error obteniendo proveedores:', error);
+        return { 
+            success: false, 
+            error: error.message || 'Error de conexión con el servidor' 
+        };
+    }
+}
+
+async function obtenerProveedorPorId(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proveedores/${id}`);
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+        }
+        
+        const data = await response.json();
+        return { success: true, data };
+    } catch (error) {
+        console.error(`Error obteniendo proveedor ID ${id}:`, error);
+        return { 
+            success: false, 
+            error: error.message || 'Error al cargar el proveedor' 
+        };
+    }
+}
+
+async function crearProveedor(proveedor) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proveedores`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+        }
+        
+        const data = await response.json();
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error creando proveedor:', error);
+        return { 
+            success: false, 
+            error: error.message || 'Error al crear el proveedor' 
+        };
+    }
+}
+
+async function actualizarProveedor(id, proveedor) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proveedores/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+        }
+        
+        return { success: true };
+    } catch (error) {
+        console.error(`Error actualizando proveedor ID ${id}:`, error);
+        return { 
+            success: false, 
+            error: error.message || 'Error al actualizar el proveedor' 
+        };
+    }
+}
+
+async function eliminarProveedor(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proveedores/${id}`, {
+            method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(`HTTP ${response.status}: ${error}`);
+        }
+        
+        return { success: true };
+    } catch (error) {
+        console.error(`Error eliminando proveedor ID ${id}:`, error);
+        return { 
+            success: false, 
+            error: error.message || 'Error al eliminar el proveedor' 
+        };
+    }
+}
+
+
+function buscarProveedores(proveedores, termino) {
+    if (!termino || termino.trim() === '') return proveedores;
+    
+    const searchTerm = termino.toLowerCase().trim();
+    
+    return proveedores.filter(proveedor => {
+        return (
+            (proveedor.nombre && proveedor.nombre.toLowerCase().includes(searchTerm)) ||
+            (proveedor.telefono && proveedor.telefono.includes(searchTerm)) ||
+            (proveedor.correo && proveedor.correo.toLowerCase().includes(searchTerm)) ||
+            (proveedor.direccion && proveedor.direccion.toLowerCase().includes(searchTerm))
+        );
+    });
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,21 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarProveedores();
 });
 
-
 function inicializarEventos() {
-    
     document.getElementById('btn-nuevo-proveedor').addEventListener('click', abrirModalNuevo);
-    
-    
     document.getElementById('btn-cerrar-modal').addEventListener('click', cerrarModal);
     document.getElementById('btn-cancelar-form').addEventListener('click', cerrarModal);
-    
-    
     document.getElementById('form-proveedor').addEventListener('submit', guardarProveedor);
-    
-    
     document.getElementById('search-input').addEventListener('input', filtrarProveedores);
-    
     
     document.getElementById('modal-proveedor').addEventListener('click', (e) => {
         if (e.target.id === 'modal-proveedor') {
@@ -30,7 +151,6 @@ function inicializarEventos() {
         }
     });
 }
-
 
 async function cargarProveedores() {
     mostrarCargando();
@@ -42,9 +162,9 @@ async function cargarProveedores() {
         renderizarTabla(proveedoresData);
     } else {
         mostrarError('Error al cargar los proveedores: ' + resultado.error);
+        mostrarSinDatos();
     }
 }
-
 
 function mostrarCargando() {
     const tbody = document.getElementById('tabla-proveedores-body');
@@ -57,7 +177,6 @@ function mostrarCargando() {
     `;
 }
 
-
 function mostrarSinDatos() {
     const tbody = document.getElementById('tabla-proveedores-body');
     tbody.innerHTML = `
@@ -68,7 +187,6 @@ function mostrarSinDatos() {
         </tr>
     `;
 }
-
 
 function renderizarTabla(proveedores) {
     const tbody = document.getElementById('tabla-proveedores-body');
@@ -85,7 +203,6 @@ function renderizarTabla(proveedores) {
         tbody.appendChild(row);
     });
 }
-
 
 function crearFilaProveedor(proveedor) {
     const tr = document.createElement('tr');
@@ -109,13 +226,11 @@ function crearFilaProveedor(proveedor) {
     return tr;
 }
 
-
 function filtrarProveedores() {
     const termino = document.getElementById('search-input').value;
     const proveedoresFiltrados = buscarProveedores(proveedoresData, termino);
     renderizarTabla(proveedoresFiltrados);
 }
-
 
 function abrirModalNuevo() {
     proveedorEditando = null;
@@ -125,7 +240,6 @@ function abrirModalNuevo() {
     limpiarErrores();
     mostrarModal();
 }
-
 
 async function editarProveedor(id) {
     mostrarModal();
@@ -142,7 +256,6 @@ async function editarProveedor(id) {
     }
 }
 
-
 function llenarFormulario(proveedor) {
     document.getElementById('proveedor-id').value = proveedor.idProveedores || '';
     document.getElementById('nombre').value = proveedor.nombre || '';
@@ -151,11 +264,9 @@ function llenarFormulario(proveedor) {
     document.getElementById('direccion').value = proveedor.direccion || '';
 }
 
-
 function mostrarModal() {
     document.getElementById('modal-proveedor').classList.add('show');
 }
-
 
 function cerrarModal() {
     document.getElementById('modal-proveedor').classList.remove('show');
@@ -164,11 +275,9 @@ function cerrarModal() {
     proveedorEditando = null;
 }
 
-
 function validarFormulario() {
     limpiarErrores();
     let esValido = true;
-    
     
     const nombre = document.getElementById('nombre').value.trim();
     if (nombre === '') {
@@ -179,16 +288,14 @@ function validarFormulario() {
         esValido = false;
     }
     
-    
     const telefono = document.getElementById('telefono').value.trim();
     if (telefono === '') {
         mostrarErrorCampo('telefono', 'El teléfono es obligatorio');
         esValido = false;
-    } else if (!/^[0-9+\-\s()]+$/.test(telefono)) {
-        mostrarErrorCampo('telefono', 'El teléfono solo debe contener números y caracteres válidos');
+    } else if (!/^[0-9+\-\s()]{8,20}$/.test(telefono)) {
+        mostrarErrorCampo('telefono', 'El teléfono debe tener entre 8 y 20 caracteres y solo números, +, -, (), o espacios');
         esValido = false;
     }
-    
     
     const correo = document.getElementById('correo').value.trim();
     if (correo === '') {
@@ -202,11 +309,9 @@ function validarFormulario() {
     return esValido;
 }
 
-
 function mostrarErrorCampo(campo, mensaje) {
     const input = document.getElementById(campo);
     input.classList.add('error');
-    
     
     const formRow = input.parentElement;
     let errorMsg = formRow.nextElementSibling;
@@ -220,12 +325,10 @@ function mostrarErrorCampo(campo, mensaje) {
     errorMsg.textContent = mensaje;
 }
 
-
 function limpiarErrores() {
     document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
     document.querySelectorAll('.error-message').forEach(el => el.remove());
 }
-
 
 async function guardarProveedor(e) {
     e.preventDefault();
@@ -235,6 +338,7 @@ async function guardarProveedor(e) {
     }
     
     const btnGuardar = e.target.querySelector('.btn-guardar');
+    const btnOriginalText = btnGuardar.innerHTML;
     btnGuardar.disabled = true;
     btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
     
@@ -249,15 +353,13 @@ async function guardarProveedor(e) {
     let resultado;
     
     if (id) {
-        
         resultado = await actualizarProveedor(id, proveedor);
     } else {
-        
         resultado = await crearProveedor(proveedor);
     }
     
     btnGuardar.disabled = false;
-    btnGuardar.innerHTML = '<i class="fas fa-save"></i> Guardar';
+    btnGuardar.innerHTML = btnOriginalText;
     
     if (resultado.success) {
         cerrarModal();
@@ -268,13 +370,11 @@ async function guardarProveedor(e) {
     }
 }
 
-
 function confirmarEliminar(id, nombre) {
     if (confirm(`¿Está seguro de eliminar al proveedor "${nombre}"?`)) {
         eliminarProveedorPorId(id);
     }
 }
-
 
 async function eliminarProveedorPorId(id) {
     const resultado = await eliminarProveedor(id);
@@ -287,12 +387,14 @@ async function eliminarProveedorPorId(id) {
     }
 }
 
-
 function mostrarExito(mensaje) {
     alert('✓ ' + mensaje);
 }
 
-
 function mostrarError(mensaje) {
     alert('✗ ' + mensaje);
 }
+
+
+window.editarProveedor = editarProveedor;
+window.confirmarEliminar = confirmarEliminar;

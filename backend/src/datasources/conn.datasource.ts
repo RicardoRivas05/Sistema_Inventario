@@ -10,7 +10,7 @@ const config = {
   connector: 'mssql',
   database: process.env.NAME_DB || 'celulares',
   port: parseInt(process.env.PORT_DB || '1433'),
-  host: process.env.HOST_DB || 'YAHIRFER2003',
+  host: process.env.HOST_DB || 'localhost\\SQLEXPRESS',
   user: process.env.USER_DB || 'sa',
   password: process.env.PASSWORD_DB || '12345',
   requestTimeout: 30000,

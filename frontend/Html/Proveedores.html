@@ -4,11 +4,393 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Proveedores - MegaCel's Inventario</title>
-    <link rel="stylesheet" href="/css/Proveedores.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-header {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .system-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .system-title i {
+            color: #3498db;
+        }
+
+        .user-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #34495e;
+        }
+
+        .nav-link.active {
+            background: #3498db;
+        }
+
+        .main-content-container {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+
+        .page-title i {
+            color: #3498db;
+        }
+
+        .btn-agregar {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-agregar:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .search-bar {
+            margin-bottom: 2rem;
+        }
+
+        .search-input-group {
+            position: relative;
+            max-width: 500px;
+        }
+
+        .search-input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .search-input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table-proveedores {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-proveedores thead {
+            background: #34495e;
+            color: white;
+        }
+
+        .table-proveedores th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table-proveedores tbody tr {
+            border-bottom: 1px solid #ecf0f1;
+            transition: all 0.3s;
+        }
+
+        .table-proveedores tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .table-proveedores td {
+            padding: 1rem;
+        }
+
+        .loading, .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-editar {
+            color: #3498db;
+        }
+
+        .btn-editar:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-eliminar {
+            color: #e74c3c;
+        }
+
+        .btn-eliminar:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+
+        .btn-close:hover {
+            color: #e74c3c;
+        }
+
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-row input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-row input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .form-row input.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn-guardar {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-guardar:hover:not(:disabled) {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-guardar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-cancelar {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancelar:hover {
+            background: #7f8c8d;
+        }
+
+        .main-footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="main-header">
         <div class="header-content">
             <div class="system-title">
@@ -28,10 +410,8 @@
         </div>
     </header>
 
-    <!-- Contenido Principal -->
     <div class="main-content-container">
         <div class="content-card">
-            
             <div class="page-header">
                 <h2 class="page-title">
                     <i class="fas fa-truck"></i> Gestión de Proveedores
@@ -41,7 +421,6 @@
                 </button>
             </div>
 
-            
             <div class="search-bar">
                 <div class="search-input-group">
                     <i class="fas fa-search"></i>
@@ -49,7 +428,6 @@
                 </div>
             </div>
 
-            
             <div class="table-container">
                 <table class="table-proveedores">
                     <thead>
@@ -63,7 +441,6 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-proveedores-body">
-                        
                         <tr>
                             <td colspan="6" class="loading">
                                 <i class="fas fa-spinner fa-spin"></i> Cargando proveedores...
@@ -75,7 +452,6 @@
         </div>
     </div>
 
-    
     <div id="modal-proveedor" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -122,12 +498,354 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="main-footer">
         <p>&copy; 2024 MegaCel's - Sistema de Inventario. Todos los derechos reservados.</p>
     </footer>
 
-    <script src="/javascript/api-proveedores.js"></script>
-    <script src="/javascript/proveedores.js"></script>
+    <script>
+        let proveedoresData = [];
+        let proveedorEditando = null;
+        const API_BASE_URL = 'http://localhost:3000';
+
+        
+        async function obtenerProveedores() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proveedores`);
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                const data = await response.json();
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error obteniendo proveedores:', error);
+                return { success: false, error: error.message || 'Error de conexión con el servidor' };
+            }
+        }
+
+        async function obtenerProveedorPorId(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proveedores/${id}`);
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                const data = await response.json();
+                return { success: true, data };
+            } catch (error) {
+                console.error(`Error obteniendo proveedor ID ${id}:`, error);
+                return { success: false, error: error.message || 'Error al cargar el proveedor' };
+            }
+        }
+
+        async function crearProveedor(proveedor) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proveedores`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(proveedor)
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                const data = await response.json();
+                return { success: true, data };
+            } catch (error) {
+                console.error('Error creando proveedor:', error);
+                return { success: false, error: error.message || 'Error al crear el proveedor' };
+            }
+        }
+
+        async function actualizarProveedor(id, proveedor) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proveedores/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(proveedor)
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                return { success: true };
+            } catch (error) {
+                console.error(`Error actualizando proveedor ID ${id}:`, error);
+                return { success: false, error: error.message || 'Error al actualizar el proveedor' };
+            }
+        }
+
+        async function eliminarProveedor(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/proveedores/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${error}`);
+                }
+                return { success: true };
+            } catch (error) {
+                console.error(`Error eliminando proveedor ID ${id}:`, error);
+                return { success: false, error: error.message || 'Error al eliminar el proveedor' };
+            }
+        }
+
+        function buscarProveedores(proveedores, termino) {
+            if (!termino || termino.trim() === '') return proveedores;
+            const searchTerm = termino.toLowerCase().trim();
+            return proveedores.filter(proveedor => {
+                return (
+                    (proveedor.nombre && proveedor.nombre.toLowerCase().includes(searchTerm)) ||
+                    (proveedor.telefono && proveedor.telefono.includes(searchTerm)) ||
+                    (proveedor.correo && proveedor.correo.toLowerCase().includes(searchTerm)) ||
+                    (proveedor.direccion && proveedor.direccion.toLowerCase().includes(searchTerm))
+                );
+            });
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarEventos();
+            cargarProveedores();
+        });
+
+        function inicializarEventos() {
+            document.getElementById('btn-nuevo-proveedor').addEventListener('click', abrirModalNuevo);
+            document.getElementById('btn-cerrar-modal').addEventListener('click', cerrarModal);
+            document.getElementById('btn-cancelar-form').addEventListener('click', cerrarModal);
+            document.getElementById('form-proveedor').addEventListener('submit', guardarProveedor);
+            document.getElementById('search-input').addEventListener('input', filtrarProveedores);
+            document.getElementById('modal-proveedor').addEventListener('click', (e) => {
+                if (e.target.id === 'modal-proveedor') cerrarModal();
+            });
+        }
+
+        async function cargarProveedores() {
+            mostrarCargando();
+            const resultado = await obtenerProveedores();
+            if (resultado.success) {
+                proveedoresData = resultado.data;
+                renderizarTabla(proveedoresData);
+            } else {
+                mostrarError('Error al cargar los proveedores: ' + resultado.error);
+                mostrarSinDatos();
+            }
+        }
+
+        function mostrarCargando() {
+            const tbody = document.getElementById('tabla-proveedores-body');
+            tbody.innerHTML = `
+                <tr class="loading">
+                    <td colspan="6">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando proveedores...
+                    </td>
+                </tr>
+            `;
+        }
+
+        function mostrarSinDatos() {
+            const tbody = document.getElementById('tabla-proveedores-body');
+            tbody.innerHTML = `
+                <tr class="no-data">
+                    <td colspan="6">
+                        <i class="fas fa-inbox"></i> No hay proveedores registrados
+                    </td>
+                </tr>
+            `;
+        }
+
+        function renderizarTabla(proveedores) {
+            const tbody = document.getElementById('tabla-proveedores-body');
+            if (!proveedores || proveedores.length === 0) {
+                mostrarSinDatos();
+                return;
+            }
+            tbody.innerHTML = '';
+            proveedores.forEach(proveedor => {
+                const row = crearFilaProveedor(proveedor);
+                tbody.appendChild(row);
+            });
+        }
+
+        function crearFilaProveedor(proveedor) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${proveedor.idProveedores || ''}</td>
+                <td>${proveedor.nombre || ''}</td>
+                <td>${proveedor.telefono || ''}</td>
+                <td>${proveedor.correo || ''}</td>
+                <td>${proveedor.direccion || 'N/A'}</td>
+                <td>
+                    <button class="btn-action btn-editar" onclick="editarProveedor(${proveedor.idProveedores})" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-action btn-eliminar" onclick="confirmarEliminar(${proveedor.idProveedores}, '${proveedor.nombre}')" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            return tr;
+        }
+
+        function filtrarProveedores() {
+            const termino = document.getElementById('search-input').value;
+            const proveedoresFiltrados = buscarProveedores(proveedoresData, termino);
+            renderizarTabla(proveedoresFiltrados);
+        }
+
+        function abrirModalNuevo() {
+            proveedorEditando = null;
+            document.getElementById('modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Agregar Proveedor';
+            document.getElementById('form-proveedor').reset();
+            document.getElementById('proveedor-id').value = '';
+            limpiarErrores();
+            mostrarModal();
+        }
+
+        async function editarProveedor(id) {
+            mostrarModal();
+            const resultado = await obtenerProveedorPorId(id);
+            if (resultado.success) {
+                proveedorEditando = resultado.data;
+                document.getElementById('modal-title').innerHTML = '<i class="fas fa-edit"></i> Editar Proveedor';
+                llenarFormulario(resultado.data);
+            } else {
+                cerrarModal();
+                mostrarError('Error al cargar el proveedor: ' + resultado.error);
+            }
+        }
+
+        function llenarFormulario(proveedor) {
+            document.getElementById('proveedor-id').value = proveedor.idProveedores || '';
+            document.getElementById('nombre').value = proveedor.nombre || '';
+            document.getElementById('telefono').value = proveedor.telefono || '';
+            document.getElementById('correo').value = proveedor.correo || '';
+            document.getElementById('direccion').value = proveedor.direccion || '';
+        }
+
+        function mostrarModal() {
+            document.getElementById('modal-proveedor').classList.add('show');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-proveedor').classList.remove('show');
+            document.getElementById('form-proveedor').reset();
+            limpiarErrores();
+            proveedorEditando = null;
+        }
+
+        function validarFormulario() {
+            limpiarErrores();
+            let esValido = true;
+            const nombre = document.getElementById('nombre').value.trim();
+            if (nombre === '') {
+                mostrarErrorCampo('nombre', 'El nombre es obligatorio');
+                esValido = false;
+            } else if (nombre.length < 3) {
+                mostrarErrorCampo('nombre', 'El nombre debe tener al menos 3 caracteres');
+                esValido = false;
+            }
+            const telefono = document.getElementById('telefono').value.trim();
+            if (telefono === '') {
+                mostrarErrorCampo('telefono', 'El teléfono es obligatorio');
+                esValido = false;
+            } else if (!/^[0-9+\-\s()]{8,20}$/.test(telefono)) {
+                mostrarErrorCampo('telefono', 'El teléfono debe tener entre 8 y 20 caracteres');
+                esValido = false;
+            }
+            const correo = document.getElementById('correo').value.trim();
+            if (correo === '') {
+                mostrarErrorCampo('correo', 'El correo es obligatorio');
+                esValido = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+                mostrarErrorCampo('correo', 'El formato del correo no es válido');
+                esValido = false;
+            }
+            return esValido;
+        }
+
+        function mostrarErrorCampo(campo, mensaje) {
+            const input = document.getElementById(campo);
+            input.classList.add('error');
+            const formRow = input.parentElement;
+            let errorMsg = formRow.nextElementSibling;
+            if (!errorMsg || !errorMsg.classList.contains('error-message')) {
+                errorMsg = document.createElement('div');
+                errorMsg.classList.add('error-message');
+                formRow.parentElement.insertBefore(errorMsg, formRow.nextSibling);
+            }
+            errorMsg.textContent = mensaje;
+        }
+
+        function limpiarErrores() {
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+        }
+
+        async function guardarProveedor(e) {
+            e.preventDefault();
+            if (!validarFormulario()) return;
+            const btnGuardar = e.target.querySelector('.btn-guardar');
+            const btnOriginalText = btnGuardar.innerHTML;
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+            const proveedor = {
+                nombre: document.getElementById('nombre').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                correo: document.getElementById('correo').value.trim(),
+                direccion: document.getElementById('direccion').value.trim()
+            };
+            const id = document.getElementById('proveedor-id').value;
+            let resultado;
+            if (id) {
+                resultado = await actualizarProveedor(id, proveedor);
+            } else {
+                resultado = await crearProveedor(proveedor);
+            }
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = btnOriginalText;
+            if (resultado.success) {
+                cerrarModal();
+                cargarProveedores();
+                mostrarExito(id ? 'Proveedor actualizado correctamente' : 'Proveedor creado correctamente');
+            } else {
+                mostrarError('Error al guardar: ' + resultado.error);
+            }
+        }
+
+        function confirmarEliminar(id, nombre) {
+            if (confirm(`¿Está seguro de eliminar al proveedor "${nombre}"?`)) {
+                eliminarProveedorPorId(id);
+            }
+        }
+
+        async function eliminarProveedorPorId(id) {
+            const resultado = await eliminarProveedor(id);
+            if (resultado.success) {
+                cargarProveedores();
+                mostrarExito('Proveedor eliminado correctamente');
+            } else {
+                mostrarError('Error al eliminar: ' + resultado.error);
+            }
+        }
+
+        function mostrarExito(mensaje) {
+            alert('✓ ' + mensaje);
+        }
+
+        function mostrarError(mensaje) {
+            alert('✗ ' + mensaje);
+        }
+
+        window.editarProveedor = editarProveedor;
+        window.confirmarEliminar = confirmarEliminar;
+    </script>
 </body>
 </html>
