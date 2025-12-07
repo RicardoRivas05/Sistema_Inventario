@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+     <!-- Configuración básica -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <!-- Título pestaña -->
+    <title>Roles - MegaCel's</title>
+     <!-- Estilos generales -->
+    <link rel="stylesheet" href="../css/Admin.css" />
+      <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<!-- HEADER SUPERIOR -->
+
+
+<body>
+    <header class="main-header">
+        <div class="header-content">
+            <!-- Nombre del sistema -->
+            <span class="system-title">MegaCel's · Panel de Administración</span>
+             <!-- Menú principal -->
+            <nav class="user-nav">
+                <a href="Registro.html" class="nav-link">Registro</a>
+                <a href="Usuario.html" class="nav-link">Usuarios</a>
+                <a href="Roles.html" class="nav-link active">Roles</a>
+                <a href="R.Ventas.html" class="nav-link">Ventas</a>
+                <a href="Login.html" class="nav-link">Login</a>
+            </nav>
+        </div>
+    </header>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="page-wrapper">
+        <section class="card">
+            <!-- Encabezado de la sección Roles -->
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Roles</h2>
+                    <p class="card-subtitle">Define los perfiles y funciones del sistema.</p>
+                </div>
+                <!-- Botón para mostrar formulario de nuevo rol -->
+                <button class="btn btn-primary" id="btn-add-role">
+                    <i class="fas fa-plus"></i> Añadir rol
+                </button>
+            </div>
+            <!-- Barra superior: texto + buscador -->
+            <div class="table-toolbar">
+                <div>Roles Configurados</div>
+                <div>
+                    Buscar:
+                    <input type="text" id="role-search" placeholder="Nombre de rol..." />
+                </div>
+            </div>
+            <!-- LISTADO DE ROLES (se llena con Roles.js) -->
+            <table class="data-table" id="rolesTable">
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Funciones / Permisos</th>
+                        <th style="width:130px;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <!-- filas generadas dinámicamente -->
+                </tbody>
+            </table>
+
+             <!-- FORMULARIO PARA CREAR / EDITAR ROL -->
+            <div id="role-form-container" style="margin-top:14px; display:none;">
+                    <!-- Separador visual -->
+                <hr style="border:none; border-top:1px solid #e5e7eb; margin-bottom:10px;">
+                <!-- Título dinámico: "Nuevo rol" o "Editar rol" -->
+                <h3 id="role-form-title">Nuevo rol</h3>
+                
+                <!-- Campos básicos del rol -->
+                <div class="form-grid">
+                    <!-- Nombre del rol -->
+                    <div class="form-field">
+                        <label for="rol_nombre">Nombre de rol *</label>
+                        <input type="text" id="rol_nombre" placeholder="Ej: Administrador" />
+                    </div>
+                      <!-- Descripción del rol -->
+                    <div class="form-field" style="grid-column: span 2;">
+                        <label for="rol_descripcion">Descripción</label>
+                        <input type="text" id="rol_descripcion" placeholder="Ej: Acceso completo al sistema" />
+                    </div>
+                </div>
+                <!-- Checks de permisos del rol -->
+                <div class="roles-table-wrapper">
+                    <table class="data-table" id="rolesTable">
+                        <label>Funciones / Permisos</label><br>
+                        <label><input type="checkbox" class="perm-check" value="Gestionar usuarios"> Gestionar
+                            usuarios</label>
+                        <label><input type="checkbox" class="perm-check" value="Gestionar roles"> Gestionar
+                            roles</label>
+                        <label><input type="checkbox" class="perm-check" value=" Gestionar inventario"> Gestionar
+                            inventario</label>
+                        <label><input type="checkbox" class="perm-check" value=" Ver reportes"> Ver reportes</label>
+                </div>
+            </div>
+                <!-- Botones del formulario de roles -->
+            <div class="form-actions">
+                 <!-- Guarda nuevo rol o actualiza el existente -->
+                <button class="btn btn-primary" id="btn-save-role" type="button">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                <!-- Limpia los campos sin borrar datos guardados -->
+                <button class="btn btn-secondary" id="btn-clear-role" type="button">
+                    Limpiar
+                </button>
+                <!-- Oculta el formulario sin aplicar cambios -->
+                <button class="btn btn-secondary" id="btn-cancel-role" type="button">
+                    Cancelar
+                </button>
+                <!-- Mensajes de validación / éxito -->
+                <span id="role-form-message" class="form-message"></span>
+            </div>
+            </div>
+           <!-- FIN FORMULARIO -->
+        </section>
+    </main>
+    <!-- FOOTER GENERAL -->
+    <footer class="main-footer">
+        <p>© 2025 MegaCel's · Gestión de Roles.</p>
+    </footer>
+      <!-- LÓGICA DEL MÓDULO ROLES (alta, edición, borrado, permisos) -->
+    <script src="../javascript/Roles.js"></script>
+</body>
+
+</html>

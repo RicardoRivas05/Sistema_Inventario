@@ -9,6 +9,9 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
+import {AlertaService} from './services/alerta.service';
+import {NotificacionService} from './services/notificacion.service';
+import {AuthService} from './services/auth.service';
 
 export {ApplicationConfig};
 
@@ -18,23 +21,20 @@ export class BackendApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    // Set up the custom sequence
+    this.setupBindings();
+
     this.sequence(MySequence);
 
-    // Set up default home page
     this.static('/', path.join(__dirname, '../public'));
 
-    // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
 
     this.projectRoot = __dirname;
-    // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
       controllers: {
-        // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
         extensions: ['.controller.js'],
         nested: true,
@@ -55,5 +55,11 @@ export class BackendApplication extends BootMixin(
         nested: true,
       },
     };
+  }
+
+  setupBindings(): void {
+    this.bind('services.AlertaService').toClass(AlertaService);
+    this.bind('services.NotificacionService').toClass(NotificacionService);
+    this.bind('services.AuthService').toClass(AuthService);
   }
 }

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Configuración básica -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Título pestaña -->
+    <title>Registro de Ventas - MegaCel's</title>
+    <!-- Estilos generales del panel -->
+    <link rel="stylesheet" href="../css/Admin.css" />
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+    <!-- =========================
+         HEADER SUPERIOR
+    ========================== -->
+    <header class="main-header">
+        <div class="header-content">
+            <!-- Nombre del sistema -->
+            <span class="system-title">MegaCel's · Panel de Administración</span>
+            <!-- Menú principal -->
+            <nav class="user-nav">
+                <a href="Registro.html" class="nav-link">Registro</a>
+                <a href="Usuario.html" class="nav-link">Usuarios</a>
+                <a href="Roles.html" class="nav-link">Roles</a>
+                <a href="R.Ventas.html" class="nav-link active">Ventas</a>
+                <a href="Login.html" class="nav-link">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+    <main class="page-wrapper">
+
+        <!-- ======================================
+             CARD: NUEVA VENTA (FORMULARIO + CARRITO)
+        ======================================= -->
+        <section class="card">
+            <!-- Encabezado de la sección -->
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Registro de Ventas</h2>
+                    <p class="card-subtitle">Registra ventas, actualiza stock y controla el historial.</p>
+                </div>
+                <!-- Botón para limpiar / iniciar nueva venta -->
+                <button class="btn btn-secondary" id="btn-nueva-venta">
+                    <i class="fas fa-file-circle-plus"></i> Nueva venta
+                </button>
+            </div>
+
+            <!-- Barra superior: texto + buscador (opcional) -->
+            <div class="table-toolbar">
+                <div>Detalle de la venta actual</div>
+                <div>
+                    <!-- Si más adelante manejas clientes, aquí podrías poner un select -->
+                    <span style="font-size:12px; color:#6b7280;">Folio generado automáticamente</span>
+                </div>
+            </div>
+
+            <!-- =========================
+                 FORMULARIO DE VENTA
+            ========================== -->
+            <div class="form-grid">
+                <!-- Selección de producto -->
+                <div class="form-field">
+                    <label for="productoSelect">Producto *</label>
+                    <!-- Se llena con JS desde el inventario -->
+                    <select id="productoSelect">
+                        <!-- opciones generadas dinámicamente -->
+                    </select>
+                </div>
+
+                <!-- Precio del producto seleccionado -->
+                <div class="form-field">
+                    <label>Precio unitario</label>
+                    <!-- Solo lectura: se actualiza con JS -->
+                    <input type="text" id="precioProducto" value="L 0.00" readonly />
+                </div>
+
+                <!-- Stock disponible del producto seleccionado -->
+                <div class="form-field">
+                    <label>Stock disponible</label>
+                    <input type="text" id="stockDisponible" value="0" readonly />
+                </div>
+
+                <!-- Cantidad a vender -->
+                <div class="form-field">
+                    <label for="cantidadInput">Cantidad *</label>
+                    <input type="number" id="cantidadInput" min="1" value="1" />
+                </div>
+
+                <!-- Botón agregar al carrito (ocupa una fila completa en responsive) -->
+                <div class="form-field" style="align-self: end;">
+                    <button class="btn btn-primary" id="btnAgregar" type="button">
+                        <i class="fas fa-cart-plus"></i> Agregar al carrito
+                    </button>
+                </div>
+            </div>
+
+            <!-- =========================
+                 TABLA: CARRITO / DETALLE
+            ========================== -->
+            <div class="roles-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th style="width:90px;">Cantidad</th>
+                            <th style="width:110px;">Precio</th>
+                            <th style="width:110px;">Subtotal</th>
+                            <th style="width:130px;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCarrito">
+                        <!-- filas generadas dinámicamente con JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- =========================
+                 TOTAL Y ACCIONES DE VENTA
+            ========================== -->
+            <div class="venta-footer">
+                <!-- Total de la venta -->
+                <div class="venta-total">
+                    <span class="venta-total-label">Total venta:</span>
+                    <span class="venta-total-valor" id="totalVenta">L 0.00</span>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="form-actions">
+                    <!-- Confirmar y guardar venta -->
+                    <button class="btn btn-primary" id="btnConfirmarVenta" type="button">
+                        <i class="fas fa-check-circle"></i> Confirmar venta
+                    </button>
+                    <!-- Limpiar solo el carrito -->
+                    <button class="btn btn-secondary" id="btnLimpiarCarrito" type="button">
+                        Limpiar carrito
+                    </button>
+                    <!-- Mensajes (validación / éxito / error) -->
+                    <span id="venta-message" class="form-message"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================
+             CARD: INVENTARIO / STOCK ACTUAL
+        ======================================= -->
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Inventario (Stock actual)</h2>
+                    <p class="card-subtitle">Productos disponibles para la venta.</p>
+                </div>
+            </div>
+
+            <div class="roles-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th style="width:110px;">Precio</th>
+                            <th style="width:80px;">Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProductos">
+                        <!-- filas generadas dinámicamente con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======================================
+             CARD: HISTORIAL DE VENTAS
+        ======================================= -->
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Historial de ventas</h2>
+                    <p class="card-subtitle">Consulta las ventas realizadas en el sistema.</p>
+                </div>
+                <!-- Buscador simple por ID o fecha (opcional) -->
+                <div class="table-toolbar" style="margin:0;">
+                    <div style="font-size:11px; color:#6b7280;">Filtrar (simple)</div>
+                    <div>
+                        <input type="text" id="historial-search" placeholder="Buscar por ID o fecha..."
+                            style="font-size:11px; padding:4px 6px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="roles-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:120px;">ID Venta</th>
+                            <th style="width:170px;">Fecha / Hora</th>
+                            <th>Detalle</th>
+                            <th style="width:110px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyHistorial">
+                        <!-- filas generadas dinámicamente con JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================
+         FOOTER GENERAL
+    ========================== -->
+    <footer class="main-footer">
+        <p>© 2025 MegaCel's · Registro de Ventas.</p>
+    </footer>
+
+    <!-- Lógica del módulo de ventas (carrito, stock, historial) -->
+    <script src="../javascript/Ventas.js"></script>
+</body>
+
+</html>

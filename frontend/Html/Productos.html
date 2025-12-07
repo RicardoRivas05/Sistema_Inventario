@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - Sistema de Inventario</title>
+    <link rel="stylesheet" href="../css/productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-boxes"></i>
+                <h1>Sistema de Inventario</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="Dashboard.html">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="Productos.html" class="active">
+                    <i class="fas fa-box"></i> Productos
+                </a>
+                <a href="Proveedores.html">
+                    <i class="fas fa-truck"></i> Proveedores
+                </a>
+                <a href="Inventario.html">
+                    <i class="fas fa-warehouse"></i> Inventario
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        
+        <!-- Header de la página -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-box"></i>
+                Catálogo de Productos
+            </h2>
+            <p>Explora nuestro catálogo completo de productos disponibles</p>
+        </div>
+
+        <!-- Controles y filtros -->
+        <div class="controls-section">
+            <div class="view-toggle">
+                <button class="view-btn active" id="btnCardView" title="Vista de cartas">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" id="btnListView" title="Vista de lista">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+            
+            <div class="filters-section">
+                <select id="filterCategory">
+                    <option value="">Todas las categorías</option>
+                    <option value="telefonos">📱 Teléfonos</option>
+                    <option value="tablets">📟 Tablets</option>
+                    <option value="accesorios">🎧 Accesorios</option>
+                    <option value="cargadores">🔌 Cargadores</option>
+                    <option value="fundas">📱 Fundas</option>
+                    <option value="audifonos">🎮 Audífonos</option>
+                </select>
+                
+                <select id="filterStatus">
+                    <option value="">Todos los estados</option>
+                    <option value="disponible">✅ Disponible</option>
+                    <option value="agotado">❌ Agotado</option>
+                    <option value="bajo-stock">⚠️ Stock Bajo</option>
+                </select>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchProduct" placeholder="Buscar producto...">
+                </div>
+            </div>
+            
+            <button class="add-product-btn" id="btnAddProduct">
+                <i class="fas fa-plus"></i> Nuevo Producto
+            </button>
+        </div>
+
+        <!-- CONTENEDOR DONDE IRÁN LAS TARJETAS -->
+        <div class="cards-grid" id="cardsGrid"></div>
+        
+        <!-- NUEVO: CONTENEDOR DE TABLA (oculto inicialmente) -->
+        <div class="products-table-container" id="tableView" style="display: none;">
+            <div class="table-header">
+                <h3>Lista de Productos</h3>
+                <div class="table-actions">
+                    <button class="quick-btn" id="btnSortTable">
+                        <i class="fas fa-sort-amount-down"></i> Ordenar
+                    </button>
+                </div>
+            </div>
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Precio Compra</th>
+                        <th>Precio Venta</th>
+                        <th>Stock</th>
+                        <th>Stock Mínimo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas se generarán dinámicamente con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="pagination" id="tablePagination">
+            <button class="page-btn" id="prevPageTable">
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <span class="page-info" id="pageInfoTable">Página 1 de 1</span>
+            <button class="page-btn" id="nextPageTable">
+                Siguiente <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="quick-actions">
+            <button class="quick-btn" id="btnExportAll">
+                <i class="fas fa-file-excel"></i>
+                <span>Exportar Todo</span>
+            </button>
+            <button class="quick-btn" id="btnPrintCatalog">
+                <i class="fas fa-print"></i>
+                <span>Imprimir Catálogo</span>
+            </button>
+            <button class="quick-btn" id="btnRefreshData">
+                <i class="fas fa-sync-alt"></i>
+                <span>Actualizar</span>
+            </button>
+            <div class="update-info">
+                <small>Actualizado: <span id="lastUpdate">Hoy, 10:30 AM</span></small>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal para agregar/editar producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Nuevo Producto</h3>
+                <button class="btn-close" id="btnCloseModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-group">
+                        <label for="productName">Nombre del Producto *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productCode">Código *</label>
+                            <input type="text" id="productCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productCategory">Categoría *</label>
+                            <select id="productCategory" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="telefonos">📱 Teléfonos</option>
+                                <option value="tablets">📟 Tablets</option>
+                                <option value="accesorios">🎧 Accesorios</option>
+                                <option value="cargadores">🔌 Cargadores</option>
+                                <option value="fundas">📱 Fundas</option>
+                                <option value="audifonos">🎮 Audífonos</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="purchasePrice">Precio Compra (L) *</label>
+                            <input type="number" id="purchasePrice" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="salePrice">Precio Venta (L) *</label>
+                            <input type="number" id="salePrice" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="initialStock">Stock Inicial *</label>
+                            <input type="number" id="initialStock" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="minStock">Stock Mínimo *</label>
+                            <input type="number" id="minStock" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productDescription">Descripción</label>
+                        <textarea id="productDescription" rows="3" placeholder="Describe las características del producto..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productImage">URL de Imagen (opcional)</label>
+                        <input type="text" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small class="form-help">Pega la URL de una imagen del producto</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productStatus">Estado *</label>
+                        <select id="productStatus" required>
+                            <option value="activo">✅ Activo</option>
+                            <option value="inactivo">❌ Inactivo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                        <button type="button" class="btn-cancel" id="btnCancelModal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de vista rápida -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content quick-view-content">
+            <div class="modal-header">
+                <h3 id="quickViewTitle">Detalles del Producto</h3>
+                <button class="btn-close" id="btnCloseQuickView">&times;</button>
+            </div>
+            <div class="modal-body" id="quickViewBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../javascript/productos.js"></script>
+</body>
+</html>
