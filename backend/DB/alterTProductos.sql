@@ -1,0 +1,2 @@
+ALTER TABLE Productos
+ADD urlImagen VARCHAR(MAX) NULL;
