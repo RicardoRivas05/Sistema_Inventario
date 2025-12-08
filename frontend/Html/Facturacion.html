@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factura - MegaCel's</title>
+  <link rel="stylesheet" href="/css/Facturacion.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-content">
+      <span class="system-title">MegaCel's Inventario</span>
+      <nav class="user-nav">
+        <a href="/Html/Ventas.html" class="nav-link">
+          <i class="fas fa-arrow-left"></i> Volver a Ventas
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content-container">
+    <div class="factura-container">
+      <h2 class="factura-title"><i class="fas fa-file-invoice-dollar"></i> Factura de Venta</h2>
+
+      <div id="factura-detalle" class="factura-detalle">
+        <p class="loading">Cargando información de la factura...</p>
+      </div>
+
+      <div class="factura-actions">
+        <button id="btn-imprimir" class="btn-imprimir">
+          <i class="fas fa-print"></i> Imprimir Factura
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <p>Copyright © 2024 - MegaCel's.</p>
+  </footer>
+
+  <script src="/javascript/facturacion.js"></script>
+</body>
+</html>

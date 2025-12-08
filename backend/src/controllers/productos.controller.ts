@@ -70,8 +70,25 @@ export class ProductosController {
       },
     },
   })
-  async find(): Promise<Productos[]> {
-    return this.productosRepository.find();
+  async find(
+    @param.filter(Productos) filter?: Filter<Productos>,
+  ): Promise<Productos[]> {
+    console.log("Filter recibido en find:", filter);
+    return this.productosRepository.find(filter);
+  }
+
+  @get('/productos/page')
+  @response(200, {
+    description: 'Array of Productos model instances paginated',
+  })
+  async dataPaginate(
+    @param.query.number('page', {default: 1} ) page: number,
+    @param.query.number('limit', {default: 10} ) limit: number,
+  ){
+    return this.productosRepository.find({
+      skip: (page - 1) * limit,
+      limit: limit,
+    });
   }
 
   @patch('/productos')
@@ -105,8 +122,13 @@ export class ProductosController {
   async findById(
     @param.path.number('id') id: number,
     @param.filter(Productos, {exclude: 'where'}) filter?: FilterExcludingWhere<Productos>
-  ): Promise<Productos> {
-    return this.productosRepository.findById(id, filter);
+  ): Promise<any> {
+    const producto = await this.productosRepository.findById(id, filter);
+
+    return {
+      success: true,
+      data: producto,
+    }
   }
 
   @patch('/productos/{id}')

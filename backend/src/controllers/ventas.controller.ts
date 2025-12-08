@@ -70,10 +70,8 @@ export class VentasController {
       },
     },
   })
-  async find(
-    @param.filter(Ventas) filter?: Filter<Ventas>,
-  ): Promise<Ventas[]> {
-    return this.ventasRepository.find(filter);
+  async find(): Promise<Ventas[]> {
+    return this.ventasRepository.find();
   }
 
   @patch('/ventas')

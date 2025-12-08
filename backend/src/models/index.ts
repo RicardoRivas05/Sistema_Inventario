@@ -5,4 +5,4 @@ export * from './control-inventario.model';
 export * from './clientes.model';
 export * from './ventas.model';
 export * from './detalle-ventas.model';
-export * from './alerta.model';
+export * from './alerta.model';export * from './productos.model';

@@ -109,6 +109,15 @@ export class Productos extends Entity {
   })
   descripcion?: string;
 
+  @property({
+    type: 'string',
+    jsonSchema: {nullable: true},
+    length: -1,
+    generated: false,
+    mssql: {columnName: 'urlImagen', dataType: 'varchar', dataLength: -1, dataPrecision: null, dataScale: null, nullable: 'YES', generated: false},
+  })
+  urlImagen?: string;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
