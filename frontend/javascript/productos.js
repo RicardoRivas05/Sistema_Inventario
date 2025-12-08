@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // ========== CONFIGURACIÓN API ==========
-    const API_BASE_URL = 'http://localhost:3000/api';
+    const API_BASE_URL = 'http://[::1]:3001';
     const ITEMS_PER_PAGE = 8;
     
     // ========== VARIABLES GLOBALES ==========
@@ -80,78 +80,71 @@ document.addEventListener('DOMContentLoaded', function() {
     async function cargarProductosDesdeAPI() {
         try {
             mostrarLoading(true);
-            
-            // Construir URL con filtros
-            let url = `${API_BASE_URL}/productos`;
+
+            // Construir URL con paginación
+            let url = `${API_BASE_URL}/productos/page?page=${currentPage}&limit=${ITEMS_PER_PAGE}`;
+
+            // Aplicar filtros simples
             const params = new URLSearchParams();
-            
-            if (currentFilter.category) params.append('categoria', currentFilter.category);
-            if (currentFilter.search) params.append('search', currentFilter.search);
-            if (currentFilter.status) params.append('estado', currentFilter.status);
-            params.append('page', currentPage);
-            params.append('limit', ITEMS_PER_PAGE);
-            
+
+            if (currentFilter.category) params.append("categoria", currentFilter.category);
+            if (currentFilter.status) params.append("estado", currentFilter.status);
+            if (currentFilter.search) params.append("search", currentFilter.search);
+
             const queryString = params.toString();
-            if (queryString) {
-                url += `?${queryString}`;
-            }
-            
+            if (queryString) url += `&${queryString}`;
+
+            console.log("URL generada:", url);
+
             const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
             const data = await response.json();
-            
-            if (data.success) {
-                productos = data.data.map(producto => ({
-                    id: producto.idProducto || producto.id,
-                    idProducto: producto.idProducto,
-                    codigo: producto.codigo || `PROD-${(producto.idProducto || producto.id).toString().padStart(3, '0')}`,
-                    nombre: producto.nombre || `${producto.marca} ${producto.modelo}`,
-                    marca: producto.marca,
-                    modelo: producto.modelo,
-                    descripcion: producto.descripcion || '',
-                    categoria: producto.categoria || 'Celulares',
-                    precioCompra: parseFloat(producto.precioCompra) || 0,
-                    precioVenta: parseFloat(producto.precioVenta) || 0,
-                    stock: parseInt(producto.stock) || 0,
-                    stockMinimo: parseInt(producto.stockMinimo) || 10,
-                    stockMaximo: parseInt(producto.stockMaximo) || 100,
-                    imagen: producto.imagen || 'https://via.placeholder.com/400x300/667eea/ffffff?text=Producto',
-                    estado: producto.estado || calcularEstadoProducto(producto.stock, producto.stockMinimo),
-                    idProveedor: producto.idProveedor || null,
-                    proveedor_nombre: producto.proveedor_nombre || '',
-                    fechaCreacion: producto.fechaCreacion || new Date().toISOString().split('T')[0]
-                }));
-                
-                // Actualizar paginación
-                if (data.pagination) {
-                    totalPages = data.pagination.totalPages;
-                    totalProductos = data.pagination.total;
-                    actualizarPaginacion();
-                } else {
-                    totalPages = 1;
-                    totalProductos = productos.length;
-                    actualizarPaginacion();
-                }
-                
-                renderizarProductos();
+
+            // Normalizar estructura
+            productos = data.map(producto => ({
+                id: producto.idProducto || producto.id,
+                idProducto: producto.idProducto,
+                codigo: producto.codigo || `PROD-${(producto.idProducto || producto.id).toString().padStart(3, '0')}`,
+                nombre: producto.nombre || `${producto.marca} ${producto.modelo}`,
+                marca: producto.marca,
+                modelo: producto.modelo,
+                descripcion: producto.descripcion || '',
+                categoria: producto.categoria || 'Celulares',
+                precioCompra: parseFloat(producto.precioCompra) || 0,
+                precioVenta: parseFloat(producto.precioVenta) || 0,
+                stock: parseInt(producto.stock) || 0,
+                stockMinimo: parseInt(producto.stockMinimo) || 10,
+                stockMaximo: parseInt(producto.stockMaximo) || 100,
+                imagen: producto.urlImagen || 'https://placehold.co/400x300?text=Producto&bg=667eea&color=fff',
+                estado: producto.estado || calcularEstadoProducto(producto.stock, producto.stockMinimo),
+                idProveedor: producto.idProveedor || null,
+                proveedor_nombre: producto.proveedor_nombre || '',
+                fechaCreacion: producto.fechaCreacion || new Date().toISOString().split('T')[0]
+            }));
+
+            // ⚠️ No tienes paginación real aún
+            // Solo sabes si vienen ITEMS_PER_PAGE elementos
+            if (productos.length < ITEMS_PER_PAGE) {
+                totalPages = currentPage; 
             } else {
-                throw new Error('Error en la respuesta de la API');
+                totalPages = currentPage + 1; 
             }
-            
+
+            totalProductos = productos.length;
+            actualizarPaginacion();
+            renderizarProductos();
+
         } catch (error) {
             console.error('Error cargando productos:', error);
             mostrarNotificacion('Error al cargar productos desde el servidor', 'warning');
-            
-            // Mostrar estado vacío
             mostrarEstadoVacio();
+
         } finally {
             mostrarLoading(false);
         }
     }
+
 
     function mostrarLoading(mostrar) {
         if (mostrar) {
@@ -280,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         card.innerHTML = `
             <div class="product-image">
-                <img src="${producto.imagen}" alt="${producto.nombre}" onerror="this.src='https://via.placeholder.com/400x300/667eea/ffffff?text=Producto'">
+                <img src="${producto.imagen || ''}" alt="${producto.nombre}">
                 <span class="category-badge">${categoriaIconos[producto.categoria] || '📦'} ${getCategoriaNombre(producto.categoria)}</span>
             </div>
             <div class="product-info">
@@ -493,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('salePrice').value = producto.precioVenta || 0;
                 document.getElementById('initialStock').value = producto.stock || 0;
                 document.getElementById('minStock').value = producto.stockMinimo || 10;
-                document.getElementById('productImage').value = producto.imagen || '';
+                document.getElementById('productImage').value = producto.urlImagen || '';
                 
                 productModal.classList.add('show');
             } else {
@@ -540,7 +533,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('quickViewBody').innerHTML = `
                     <div class="quick-view-product">
                         <div class="quick-view-image">
-                            <img src="${producto.imagen || 'https://via.placeholder.com/400x300/667eea/ffffff?text=Producto'}" alt="${producto.nombre}">
+                            <img src="${producto.urlImagen || 'https://via.placeholder.com/400x300/667eea/ffffff?text=Producto'}" alt="${producto.nombre}">
                         </div>
                         <div class="quick-view-details">
                             <h4>${producto.nombre || `${producto.marca} ${producto.modelo}`}</h4>
@@ -640,7 +633,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 stockMinimo: parseInt(document.getElementById('minStock').value),
                 categoria: document.getElementById('productCategory').value || 'Celulares',
                 descripcion: document.getElementById('productDescription').value || '',
-                idProveedor: 1 // Valor por defecto
+                idProveedor: 1, // Valor por defecto
+                urlImagen: document.getElementById('productImage').value || 'https://placehold.co/400x300?text=Producto&bg=667eea&color=fff'
             };
             
             let response;
