@@ -1,23 +1,55 @@
-
-import {inject} from '@loopback/core';
 import {
+  Count,
+  CountSchema,
+  Filter,
+  FilterExcludingWhere,
+  repository,
+  Where,
+} from '@loopback/repository';
+import {
+  post,
+  param,
   get,
+  getModelSchemaRef,
+  patch,
+  put,
+  del,
+  requestBody,
   response,
-  Request,
-  RestBindings,
 } from '@loopback/rest';
+import {inject} from '@loopback/core';
 import {DashboardService} from '../services/dashboard.service';
-
 
 export class DashboardController {
   constructor(
     @inject('services.DashboardService')
     public dashboardService: DashboardService,
-    @inject(RestBindings.Http.REQUEST)
-    private request: Request,
   ) {}
 
   
+  @get('/ping')
+  @response(200, {
+    description: 'Ping successful',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            message: {type: 'string'},
+            timestamp: {type: 'string'}
+          }
+        }
+      }
+    }
+  })
+  async ping(): Promise<object> {
+    return {
+      message: 'Server is running',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+ 
   @get('/dashboard/metricas-generales')
   @response(200, {
     description: 'Métricas generales del inventario',
@@ -26,22 +58,10 @@ export class DashboardController {
         schema: {
           type: 'object',
           properties: {
-            totalProductos: {
-              type: 'number',
-              description: 'Total de productos activos'
-            },
-            valorInventario: {
-              type: 'number',
-              description: 'Valor total del inventario en moneda local'
-            },
-            stockBajo: {
-              type: 'number',
-              description: 'Cantidad de productos con stock bajo'
-            },
-            movimientosHoy: {
-              type: 'number',
-              description: 'Total de movimientos registrados hoy'
-            },
+            totalProductos: {type: 'number'},
+            valorInventario: {type: 'number'},
+            stockBajo: {type: 'number'},
+            movimientosHoy: {type: 'number'},
           },
         },
       },
@@ -53,12 +73,19 @@ export class DashboardController {
     stockBajo: number;
     movimientosHoy: number;
   }> {
-    console.log('GET /dashboard/metricas-generales');
-    return this.dashboardService.obtenerMetricasGenerales();
+    try {
+      console.log('[Dashboard Controller] Obteniendo métricas generales...');
+      const metricas = await this.dashboardService.obtenerMetricasGenerales();
+      console.log('[Dashboard Controller] Métricas obtenidas:', metricas);
+      return metricas;
+    } catch (error) {
+      console.error('[Dashboard Controller] Error en métricas:', error);
+      throw error;
+    }
   }
 
- 
-  @get('/dashboard/stock-alertas')
+  
+  @get('/dashboard/stock-bajo')
   @response(200, {
     description: 'Lista de productos con stock bajo',
     content: {
@@ -72,31 +99,35 @@ export class DashboardController {
               nombre: {type: 'string'},
               stockActual: {type: 'number'},
               stockMinimo: {type: 'number'},
-              porcentaje: {
-                type: 'number',
-                description: 'Porcentaje de stock actual vs mínimo'
-              },
+              porcentaje: {type: 'number'},
             },
           },
         },
       },
     },
   })
-  async obtenerStockAlertas(): Promise<Array<{
+  async obtenerProductosStockBajo(): Promise<Array<{
     id: number;
     nombre: string;
     stockActual: number;
     stockMinimo: number;
     porcentaje: number;
   }>> {
-    console.log('GET /dashboard/stock-alertas');
-    return this.dashboardService.obtenerProductosStockBajo();
+    try {
+      console.log('[Dashboard Controller] Obteniendo productos con stock bajo...');
+      const productos = await this.dashboardService.obtenerProductosStockBajo();
+      console.log('[Dashboard Controller] Productos con stock bajo:', productos.length);
+      return productos;
+    } catch (error) {
+      console.error('[Dashboard Controller] Error en stock bajo:', error);
+      throw error;
+    }
   }
 
- 
+  
   @get('/dashboard/movimientos-recientes')
   @response(200, {
-    description: 'Movimientos recientes de inventario',
+    description: 'Lista de movimientos recientes',
     content: {
       'application/json': {
         schema: {
@@ -106,15 +137,9 @@ export class DashboardController {
             properties: {
               id: {type: 'number'},
               productoNombre: {type: 'string'},
-              tipo: {
-                type: 'string',
-                description: 'Entrada, Salida o Ajuste'
-              },
+              tipo: {type: 'string'},
               cantidad: {type: 'number'},
-              fecha: {
-                type: 'string',
-                format: 'date-time'
-              },
+              fecha: {type: 'string'},
               usuario: {type: 'string'},
             },
           },
@@ -130,14 +155,21 @@ export class DashboardController {
     fecha: string;
     usuario: string;
   }>> {
-    console.log('GET /dashboard/movimientos-recientes');
-    return this.dashboardService.obtenerMovimientosRecientes();
+    try {
+      console.log('[Dashboard Controller] Obteniendo movimientos recientes...');
+      const movimientos = await this.dashboardService.obtenerMovimientosRecientes();
+      console.log('[Dashboard Controller] Movimientos obtenidos:', movimientos.length);
+      return movimientos;
+    } catch (error) {
+      console.error('[Dashboard Controller] Error en movimientos:', error);
+      throw error;
+    }
   }
 
-  
-  @get('/dashboard/productos-populares')
+ 
+  @get('/dashboard/tendencia-movimientos')
   @response(200, {
-    description: 'Top 10 productos más movidos',
+    description: 'Tendencia de movimientos últimos 7 días',
     content: {
       'application/json': {
         schema: {
@@ -145,22 +177,26 @@ export class DashboardController {
           items: {
             type: 'object',
             properties: {
-              nombre: {type: 'string'},
-              totalMovimientos: {
-                type: 'number',
-                description: 'Total de movimientos en los últimos 30 días'
-              },
+              fecha: {type: 'string'},
+              cantidad: {type: 'number'},
             },
           },
         },
       },
     },
   })
-  async obtenerProductosPopulares(): Promise<Array<{
-    nombre: string;
-    totalMovimientos: number;
+  async obtenerTendenciaMovimientos(): Promise<Array<{
+    fecha: string;
+    cantidad: number;
   }>> {
-    console.log('GET /dashboard/productos-populares');
-    return this.dashboardService.obtenerProductosPopulares();
+    try {
+      console.log('[Dashboard Controller] Obteniendo tendencia de movimientos...');
+      const tendencia = await this.dashboardService.obtenerTendenciaMovimientos();
+      console.log('[Dashboard Controller] Tendencia obtenida:', tendencia.length, 'días');
+      return tendencia;
+    } catch (error) {
+      console.error('[Dashboard Controller] Error en tendencia:', error);
+      throw error;
+    }
   }
 }

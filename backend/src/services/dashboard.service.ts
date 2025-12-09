@@ -1,4 +1,4 @@
-// src/services/dashboard.service.ts
+
 import {injectable, BindingScope} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {ProductosRepository} from '../repositories/productos.repository';
@@ -13,10 +13,6 @@ export class DashboardService {
     public controlInventarioRepository: ControlInventarioRepository,
   ) {}
 
-  /**
-   * Obtiene las métricas generales del inventario
-   * Retorna: totalProductos, valorInventario, stockBajo, movimientosHoy
-   */
   async obtenerMetricasGenerales(): Promise<{
     totalProductos: number;
     valorInventario: number;
@@ -24,78 +20,84 @@ export class DashboardService {
     movimientosHoy: number;
   }> {
     try {
-      // Total de productos (no hay campo 'activo' en tu modelo, usando todos)
+      console.log('[Dashboard Service] Calculando métricas generales...');
+
+      
       const totalProductos = await this.productosRepository.count();
 
-      // Valor total del inventario
+      
       const valorInventario = await this.calcularValorInventario();
 
-      // Productos con stock bajo
+      
       const stockBajo = await this.contarProductosStockBajo();
 
-      // Movimientos de hoy
+      
       const hoy = new Date();
       hoy.setHours(0, 0, 0, 0);
+      
       const movimientosHoy = await this.controlInventarioRepository.count({
-        fecha: {gte: hoy.toISOString().split('T')[0]} as any,
+        fecha: {gte: hoy.toISOString()} as any,
       });
 
-      return {
+      const resultado = {
         totalProductos: totalProductos.count,
         valorInventario,
         stockBajo,
         movimientosHoy: movimientosHoy.count,
       };
+
+      console.log('[Dashboard Service] Métricas calculadas:', resultado);
+      return resultado;
+
     } catch (error) {
-      console.error('Error en obtenerMetricasGenerales:', error);
+      console.error('[Dashboard Service] Error en obtenerMetricasGenerales:', error);
       throw error;
     }
   }
 
-  /**
-   * Calcula el valor total del inventario
-   * Suma: stock * precioVenta de todos los productos
-   */
+  
   async calcularValorInventario(): Promise<number> {
     try {
       const productos = await this.productosRepository.find({
         fields: ['stock', 'precioVenta'],
       });
 
-      return productos.reduce((total, producto) => {
+      const valor = productos.reduce((total, producto) => {
         const stock = producto.stock ?? 0;
         const precio = producto.precioVenta ?? 0;
         return total + (stock * precio);
       }, 0);
+
+      console.log('[Dashboard Service] Valor inventario calculado:', valor);
+      return valor;
+
     } catch (error) {
-      console.error('Error en calcularValorInventario:', error);
+      console.error('[Dashboard Service] Error en calcularValorInventario:', error);
       return 0;
     }
   }
 
-  /**
-   * Cuenta productos con stock bajo
-   * Criterio: stock <= stockMinimo
-   */
+  
   async contarProductosStockBajo(): Promise<number> {
     try {
       const productos = await this.productosRepository.find({
         fields: ['stock', 'stockMinimo'],
       });
 
-      return productos.filter(p => 
+      const cantidad = productos.filter(p => 
         (p.stock ?? 0) <= (p.stockMinimo ?? 0)
       ).length;
+
+      console.log('[Dashboard Service] Productos con stock bajo:', cantidad);
+      return cantidad;
+
     } catch (error) {
-      console.error('Error en contarProductosStockBajo:', error);
+      console.error('[Dashboard Service] Error en contarProductosStockBajo:', error);
       return 0;
     }
   }
 
-  /**
-   * Obtiene productos con stock bajo (top 10)
-   * Incluye: id, nombre, stockActual, stockMinimo, porcentaje
-   */
+  
   async obtenerProductosStockBajo(): Promise<Array<{
     id: number;
     nombre: string;
@@ -104,12 +106,14 @@ export class DashboardService {
     porcentaje: number;
   }>> {
     try {
+      console.log('[Dashboard Service] Obteniendo productos con stock bajo...');
+
       const productos = await this.productosRepository.find({
         order: ['stock ASC'],
         limit: 10,
       });
 
-      return productos
+      const resultado = productos
         .filter(p => (p.stock ?? 0) <= (p.stockMinimo ?? 0))
         .map(p => {
           const stockActual = p.stock ?? 0;
@@ -126,16 +130,17 @@ export class DashboardService {
             porcentaje,
           };
         });
+
+      console.log('[Dashboard Service] Productos con stock bajo encontrados:', resultado.length);
+      return resultado;
+
     } catch (error) {
-      console.error('Error en obtenerProductosStockBajo:', error);
+      console.error('[Dashboard Service] Error en obtenerProductosStockBajo:', error);
       return [];
     }
   }
 
-  /**
-   * Obtiene movimientos recientes (últimos 15)
-   * Incluye: id, productoNombre, tipo, cantidad, fecha, usuario
-   */
+  
   async obtenerMovimientosRecientes(): Promise<Array<{
     id: number;
     productoNombre: string;
@@ -145,16 +150,33 @@ export class DashboardService {
     usuario: string;
   }>> {
     try {
+      console.log('[Dashboard Service] Obteniendo movimientos recientes...');
+
       const movimientos = await this.controlInventarioRepository.find({
         order: ['fecha DESC'],
         limit: 15,
-        // include: [{relation: 'producto'}], // Comentado hasta que definas relaciones
       });
 
-      return movimientos.map(m => {
-        // Para obtener nombre del producto, necesitarías una relación o consulta separada
-        // Por ahora usamos un placeholder
-        const productoNombre = `Producto ${m.idProducto}`;
+      
+      const productosIds = [...new Set(movimientos.map(m => m.idProducto).filter(id => id))];
+      const productos = await this.productosRepository.find({
+        where: {
+          idProducto: {inq: productosIds}
+        },
+        fields: ['idProducto', 'marca', 'modelo']
+      });
+
+      
+      const productosMap = new Map();
+      productos.forEach(p => {
+        const nombre = p.marca && p.modelo ? `${p.marca} ${p.modelo}` : 'Producto sin nombre';
+        productosMap.set(p.idProducto, nombre);
+      });
+
+      const resultado = movimientos.map(m => {
+        const productoNombre = m.idProducto 
+          ? (productosMap.get(m.idProducto) || `Producto ID: ${m.idProducto}`)
+          : 'Producto desconocido';
 
         return {
           id: m.idControl ?? 0,
@@ -162,61 +184,27 @@ export class DashboardService {
           tipo: m.tipoMovimiento ?? 'Movimiento',
           cantidad: m.cantidad ?? 0,
           fecha: m.fecha ?? new Date().toISOString(),
-          usuario: `Usuario ${m.idUsuario ?? 'Sistema'}`,
+          usuario: m.idUsuario ? `Usuario ${m.idUsuario}` : 'Sistema',
         };
       });
+
+      console.log('[Dashboard Service] Movimientos recientes obtenidos:', resultado.length);
+      return resultado;
+
     } catch (error) {
-      console.error('Error en obtenerMovimientosRecientes:', error);
+      console.error('[Dashboard Service] Error en obtenerMovimientosRecientes:', error);
       return [];
     }
   }
 
-  /**
-   * Obtiene productos más movidos (últimos 30 días)
-   * Top 10 productos por cantidad de movimientos
-   */
-  async obtenerProductosPopulares(): Promise<Array<{
-    idProducto: number;
-    nombre: string;
-    totalMovimientos: number;
-  }>> {
-    try {
-      const dataSource = this.controlInventarioRepository.dataSource;
-      
-      // Consulta SQL optimizada usando los nombres correctos de columnas
-      const query = `
-        SELECT TOP 10
-          p.Id_Producto as idProducto,
-          CONCAT(p.marca, ' ', p.modelo) as nombre,
-          COUNT(ci.Id_control) as totalMovimientos
-        FROM Control_Inventario ci
-        INNER JOIN Productos p ON ci.Id_producto = p.Id_Producto
-        WHERE ci.fecha >= DATEADD(day, -30, GETDATE())
-        GROUP BY p.Id_Producto, p.marca, p.modelo
-        ORDER BY COUNT(ci.Id_control) DESC
-      `;
-
-      const result = await dataSource.execute(query);
-      
-      return result.map((row: any) => ({
-        idProducto: row.idProducto,
-        nombre: row.nombre || 'Producto sin nombre',
-        totalMovimientos: parseInt(row.totalMovimientos) || 0,
-      }));
-    } catch (error) {
-      console.error('Error en obtenerProductosPopulares:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Método adicional: Obtener tendencia de movimientos (últimos 7 días)
-   */
+  
   async obtenerTendenciaMovimientos(): Promise<Array<{
     fecha: string;
     cantidad: number;
   }>> {
     try {
+      console.log('[Dashboard Service] Obteniendo tendencia de movimientos...');
+
       const dataSource = this.controlInventarioRepository.dataSource;
       
       const query = `
@@ -231,12 +219,16 @@ export class DashboardService {
 
       const result = await dataSource.execute(query);
       
-      return result.map((row: any) => ({
+      const tendencia = result.map((row: any) => ({
         fecha: new Date(row.fecha).toISOString().split('T')[0],
         cantidad: parseInt(row.cantidad) || 0,
       }));
+
+      console.log('[Dashboard Service] Tendencia obtenida:', tendencia.length, 'días');
+      return tendencia;
+
     } catch (error) {
-      console.error('Error en obtenerTendenciaMovimientos:', error);
+      console.error('[Dashboard Service] Error en obtenerTendenciaMovimientos:', error);
       return [];
     }
   }
