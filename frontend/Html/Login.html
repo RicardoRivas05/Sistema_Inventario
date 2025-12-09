@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - MegaCel's Inventario</title>
-    <link rel="stylesheet" href="/frontend/css/Login.css">
+    <link rel="stylesheet" href="../css/Login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <div class="login-card">
             
             <div class="logo-container">
-                <img src="/frontend/img/Logo.png" alt="Logotipo MegaCel's" class="site-logo">
+                <img src="../img/Logo.png" alt="Logotipo MegaCel's" class="site-logo">
                 
                 <h1 class="site-name">MEGACEL'S</h1>
             </div>
@@ -22,7 +22,7 @@
                 <p><i class="fas fa-user-circle"></i> INICIO SESION</p>
             </div>
 
-            <form id="login-form" action="/Backend/login.php" method="POST">
+            <form id="login-form" action="" method="POST">
                 
                 <div class="input-group">
                     <input type="text" id="username" name="username" placeholder="Username" required>
@@ -35,10 +35,10 @@
                 </div>
                 
                 <button type="submit" class="btn-ingresar">Ingresar</button>
-                <button type="button" class="btn-crear-usuario">Crear Usuario</button>
-            </form>
-            
+                <button href="../Html/Registro.html" type="button" class="btn-crear-usuario">Crear Usuario</button>
+            </form>            
         </div>
     </div>
+    <script src="../javascript/login.js"></script>
 </body>
 </html>

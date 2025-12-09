@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Usuario - MegaCel's</title>
-    <link rel="stylesheet" href="/frontend/css/Registro.css">
+    <link rel="stylesheet" href="../css/Registro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
         <div class="header-content">
             <span class="system-title">MegaCel's Inventario</span> 
             <nav class="user-nav">
-                <a href="" class="nav-link"><i class="fas fa-sign-in-alt"></i> Volver a Iniciar Sesión</a>
+                <a href="../Html/Login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Volver a Iniciar Sesión</a>
             </nav>
         </div>
     </header>
@@ -55,6 +55,13 @@
                     </select>
                 </div>
 
+                <div class="form-row">
+                    <label for="correo">Correo electronico</label>
+                    <input type="email" id="correo" name="correo" required>
+                </div>
+
+                
+
                 <div class="form-actions">
                     <button type="submit" class="btn-guardar">Guardar</button>
                     <button type="button" class="btn-cancelar" onclick="window.location.href='index.html'">Cancelar</button>
@@ -72,6 +79,6 @@
         <p>Copyright © 2024 - MegaCel's.</p>
     </footer>
     
-    <script src="/frontend/javascript/registro.js"></script>
+    <script src="../javascript/registro.js"></script>
 </body>
 </html>
