@@ -6,10 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dashboard - Sistema de Inventario</title>
     
-    
-    <link rel="stylesheet" href="css/Dashboard.css">
-    
-    
+    <!-- RUTAS CORREGIDAS según estructura: frontend/css/Dashboard.css -->
+    <link rel="stylesheet" href="../css/Dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -54,7 +52,7 @@
             </div>
         </div>
 
-       
+        
         <div class="metrics-grid">
             
             
@@ -144,29 +142,28 @@
 
         </div>
 
-       
-        <div class="dashboard-section full-width">
-            <div class="section-header">
-                <h3>
-                    <i class="fas fa-chart-bar"></i> 
-                    Productos Más Movidos (Últimos 30 días)
-                </h3>
-            </div>
-            <div class="section-content">
-                <div id="chartContainer" class="chart-container">
-                    <canvas id="productosChart"></canvas>
-                </div>
-            </div>
-        </div>
-
     </main>
 
+    <!-- RUTAS CORREGIDAS según estructura: frontend/javascript/api-dashboard.js -->
+    <script src="../javascript/api-dashboard.js"></script>
+    <script src="../javascript/dashboard.js"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.js"></script>
-    
-    
-    <script src="js/api-dashboard.js"></script>
-    <script src="js/dashboard.js"></script>
+    <!-- Script para solucionar posibles problemas de CORS -->
+    <script>
+        // Agregar headers CORS si es necesario
+        fetch = (function(originalFetch) {
+            return function(url, options) {
+                options = options || {};
+                options.headers = options.headers || {};
+                
+                // Agregar headers para desarrollo
+                options.headers['Accept'] = 'application/json';
+                options.headers['Content-Type'] = 'application/json';
+                
+                return originalFetch(url, options);
+            };
+        })(fetch);
+    </script>
     
 </body>
 </html>

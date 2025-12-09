@@ -8,15 +8,21 @@ dotenv.config();
 const config = {
   name: 'conn',
   connector: 'mssql',
-  database: process.env.NAME_DB || 'celulares',
-  port: parseInt(process.env.PORT_DB || '1433'),
-  host: process.env.HOST_DB || 'localhost\\SQLEXPRESS',
-  user: process.env.USER_DB || 'sa',
-  password: process.env.PASSWORD_DB || '12345',
-  requestTimeout: 30000,
+  host: process.env.DB_SERVER || 'localhost',
+  port: Number(process.env.DB_PORT) || 56136,
+  database: process.env.DB_NAME || 'celulares',
+  user: process.env.DB_USER || 'sa',
+  password: process.env.DB_PASSWORD || '12345678',
+  instanceName: 'SQLEXPRESS02', 
+  
   options: {
-    encrypt: false,
-    trustServerCertificate: true,
+    encrypt: process.env.DB_ENCRYPT === 'true',
+    trustServerCertificate:
+      process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
+    trustedConnection:
+      process.env.DB_TRUSTED_CONNECTION === 'true',
+    
+    enableArithAbort: true,
   },
 };
 
