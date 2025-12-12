@@ -4,17 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Historial de Ventas - MegaCel's</title>
-  <link rel="stylesheet" href="/css/Ventas.css">
+  <link rel="stylesheet" href="../css/Ventas.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
   <header class="main-header">
     <div class="header-content">
-      <span class="system-title">MegaCel's Inventario</span>
+      <span class="system-title"><i class="fas fa-chart-line"></i> MegaCel's · Historial de Ventas</span>
       <nav class="user-nav">
-        <a href="/Html/Inventario.html" class="nav-link">
-          <i class="fas fa-home"></i> Inicio
+        <a href="Dashboard.html" class="nav-link">
+          <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="Inventario.html" class="nav-link">
+          <i class="fas fa-warehouse"></i> Inventario
+        </a>
+        <a href="R.Ventas.html" class="nav-link">
+          <i class="fas fa-cash-register"></i> Nueva Venta
         </a>
       </nav>
     </div>
@@ -22,35 +28,170 @@
 
   <main class="main-content-container">
     <div class="ventas-container">
-      <h2 class="ventas-title"><i class="fas fa-cash-register"></i> Historial de Ventas</h2>
+      <div class="ventas-header">
+        <h2 class="ventas-title"><i class="fas fa-cash-register"></i> Historial de Ventas</h2>
+        
+        <!-- Filtros y búsqueda -->
+        <div class="ventas-filters">
+          <div class="filter-group">
+            <label for="filterDate"><i class="fas fa-calendar-alt"></i> Fecha:</label>
+            <input type="date" id="filterDate" class="filter-input">
+          </div>
+          
+          <div class="filter-group">
+            <label for="filterStatus"><i class="fas fa-check-circle"></i> Estado:</label>
+            <select id="filterStatus" class="filter-input">
+              <option value="">Todos</option>
+              <option value="1">Completadas</option>
+              <option value="0">Pendientes</option>
+              <option value="canceladas">Canceladas</option>
+            </select>
+          </div>
+          
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar por ID, cliente..." class="search-input">
+          </div>
+          
+          <button id="btnExport" class="btn-export">
+            <i class="fas fa-file-export"></i> Exportar
+          </button>
+        </div>
+      </div>
+      
+      <!-- Estadísticas rápidas -->
+      <div class="ventas-stats">
+        <div class="stat-card">
+          <div class="stat-icon total">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalVentas">0</h3>
+            <p>Total Ventas</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon amount">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalMonto">L. 0.00</h3>
+            <p>Monto Total</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon avg">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="promedioVenta">L. 0.00</h3>
+            <p>Promedio por Venta</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon pending">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="ventasPendientes">0</h3>
+            <p>Pendientes</p>
+          </div>
+        </div>
+      </div>
 
-      <div class="tabla-ventas">
-        <table id="tabla-ventas">
-          <thead>
-            <tr>
-              <th>ID Venta</th>
-              <th>Fecha</th>
-              <th>Total (L.)</th>
-              <th>ID Cliente</th>
-              <th>ID Usuario</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="7" class="loading">Cargando ventas...</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Tabla de ventas -->
+      <div class="tabla-ventas-container">
+        <div class="table-header">
+          <span id="tableCount">Mostrando 0 ventas</span>
+          <div class="table-actions">
+            <button id="btnRefresh" class="btn-refresh" title="Actualizar">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+            <button id="btnPrint" class="btn-print" title="Imprimir">
+              <i class="fas fa-print"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="tabla-ventas">
+          <table id="tabla-ventas">
+            <thead>
+              <tr>
+                <th>ID Venta</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Productos</th>
+                <th>Total (L.)</th>
+                <th>Usuario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="8" class="loading">
+                  <i class="fas fa-spinner fa-spin"></i> Cargando ventas...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="pagination" id="pagination">
+          <button id="prevPage" class="page-btn" disabled>
+            <i class="fas fa-chevron-left"></i> Anterior
+          </button>
+          <span id="pageInfo" class="page-info">Página 1 de 1</span>
+          <button id="nextPage" class="page-btn" disabled>
+            Siguiente <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Modal para ver detalles de venta -->
+  <div id="detailModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-receipt"></i> Detalle de Venta <span id="modalVentaId"></span>
+        </h3>
+        <button class="modal-close" id="modalClose">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div id="modalLoading" class="modal-loading">
+          <i class="fas fa-spinner fa-spin"></i> Cargando detalles...
+        </div>
+        
+        <div id="modalContent" style="display: none;">
+          <!-- Detalles de la venta se cargarán aquí -->
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modalCancel">
+          Cerrar
+        </button>
+        <button class="btn btn-primary" id="modalPrint">
+          <i class="fas fa-print"></i> Imprimir Recibo
+        </button>
+      </div>
+    </div>
+  </div>
+
   <footer class="main-footer">
-    <p>Copyright © 2024 - MegaCel's.</p>
+    <p>© 2025 MegaCel's · Sistema de Gestión de Ventas</p>
+    <small id="lastUpdate">Última actualización: --:--</small>
   </footer>
 
-  <script src="/javascript/ventas.js"></script>
+  <script src="../javascript/ventas.js"></script>
 </body>
 </html>
