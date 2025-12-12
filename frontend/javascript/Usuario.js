@@ -1,77 +1,93 @@
 // ==============================
-// MÓDULO USUARIOS - PERSISTENTE Y CONECTADO A ROLES
+// MÓDULO USUARIOS - CONECTADO A LOOPBACK
 // ==============================
 
-// Claves de localStorage
+// Path del controlador en LoopBack
+const USUARIOS_PATH = "/usuarios";
+
+// Clave de roles en localStorage (siguen viniendo del módulo Roles)
 const LS_ROLES_KEY_U = "megacels_roles";
-const LS_USERS_KEY   = "megacels_usuarios";
 
 // Cargar roles guardados (definidos en Roles)
 let roles = JSON.parse(localStorage.getItem(LS_ROLES_KEY_U));
 if (!Array.isArray(roles)) {
-  roles = []; // si no hay roles, el select lo dirá
-}
-// Cargar usuarios guardados
-let usuarios = JSON.parse(localStorage.getItem(LS_USERS_KEY));
-if (!Array.isArray(usuarios)) {
-  usuarios = []; // empiezas vacío
+  roles = [];
 }
 
-// Referencias a inputs/formulario
-const selectRol      = document.getElementById("u_rol"); // select rol
-const inputNombre    = document.getElementById("u_nombre"); // nombre completo
-const inputUsername  = document.getElementById("u_username"); // usuario
-const inputPassword  = document.getElementById("u_password"); // contraseña
-const selectEstado   = document.getElementById("u_estado"); // estado
-const inputEmail     = document.getElementById("u_email"); // correo
+// Lista de usuarios que vienen del backend
+let usuarios = [];
 
-const btnSaveUser    = document.getElementById("btn-save-user"); // guardar / actualizar
-const btnClearUser   = document.getElementById("btn-clear-user"); // limpiar formulario
-const userMsg        = document.getElementById("user-form-message");// texto de validación
-// Tabla y búsqueda
+// REFERENCIAS A ELEMENTOS DEL DOM
+
+const selectRol      = document.getElementById("u_rol");
+const inputNombre    = document.getElementById("u_nombre");
+const inputUsername  = document.getElementById("u_username");
+const inputPassword  = document.getElementById("u_password");
+const selectEstado   = document.getElementById("u_estado");
+const inputEmail     = document.getElementById("u_email");
+
+const btnSaveUser    = document.getElementById("btn-save-user");
+const btnClearUser   = document.getElementById("btn-clear-user");
+const userMsg        = document.getElementById("user-form-message");
+
 const userSearch     = document.getElementById("user-search");
 const usersTableBody = document.querySelector("#usersTable tbody");
 
-// Resumen // Opcionales (solo si existen en HTML)
+// Elementos opcionales para resumen (solo si los agregas al HTML)
 const sumTotal     = document.getElementById("sum-total");
 const sumActivos   = document.getElementById("sum-activos");
 const sumInactivos = document.getElementById("sum-inactivos");
 const sumPorRol    = document.getElementById("sum-por-rol");
 const permisosList = document.getElementById("permisos-list");
 
-// Usuario actualmente en edición (null = nuevo)
+// Usuario actualmente en edición (objeto completo o null)
 let usuarioEditando = null;
 
-// Helpers
 
-// Guarda usuarios en localStorage
-function saveUsers() {
-  localStorage.setItem(LS_USERS_KEY, JSON.stringify(usuarios));
+// HELPERS
+
+// Devuelve el id del usuario (id o idUsuario)
+function getUserId(u) {
+  // AJUSTAR si tu modelo usa otro nombre
+  return u.id ?? u.idUsuario;
 }
-// Devuelve rol por id
+
 function getRol(id) {
-  return roles.find(r => r.id === id);
+  return roles.find((r) => r.id === id);
 }
-// Devuelve nombre del rol o "Sin rol"
+
 function rolNombre(id) {
   return getRol(id)?.nombre || "Sin rol";
 }
 
-// Cargar roles en el select
+function setMensaje(msg, tipo = "info") {
+  if (!userMsg) return;
+  userMsg.textContent = msg || "";
+  if (tipo === "error") {
+    userMsg.style.color = "#dc2626";
+  } else if (tipo === "ok") {
+    userMsg.style.color = "#16a34a";
+  } else {
+    userMsg.style.color = "#4b5563";
+  }
+}
+
+// CARGAR ROLES EN EL SELECT
 
 function cargarRolesSelect() {
   selectRol.innerHTML = '<option value="">Seleccione un rol</option>';
-  // Si no hay roles definidos
+
   if (!roles.length) {
     const opt = document.createElement("option");
     opt.disabled = true;
-    opt.textContent = "No hay roles registrados (cree uno en la sección Roles).";
+    opt.textContent =
+      "No hay roles registrados (cree uno en la sección Roles).";
     selectRol.appendChild(opt);
     selectRol.value = "";
     return;
   }
-   // Agrega opciones desde localStorage
-  roles.forEach(r => {
+
+  roles.forEach((r) => {
     const opt = document.createElement("option");
     opt.value = r.id;
     opt.textContent = r.nombre;
@@ -79,43 +95,69 @@ function cargarRolesSelect() {
   });
 }
 
-// Render tabla de usuarios
+// CARGAR USUARIOS DESDE EL BACKEND
+
+async function cargarUsuarios() {
+  try {
+    usuarios = await api.get(USUARIOS_PATH);
+  } catch (err) {
+    console.error("Error cargando usuarios:", err);
+    usuarios = [];
+    setMensaje("No se pudieron cargar los usuarios.", "error");
+  }
+  renderUsuarios();
+}
+
+// RENDER TABLA DE USUARIOS
 
 function renderUsuarios() {
   const filtro = (userSearch?.value || "").trim().toLowerCase();
   usersTableBody.innerHTML = "";
 
   usuarios
-    .filter(u =>
-      u.nombre.toLowerCase().includes(filtro) ||
-      u.username.toLowerCase().includes(filtro)
-    )
-    .forEach(u => {
+    .filter((u) => {
+      // AJUSTAR nombres de campos si tu modelo usa otros
+      const nombre   = String(u.nombre ?? u.nombreCompleto ?? "").toLowerCase();
+      const username = String(u.username ?? u.usuario ?? "").toLowerCase();
+      return (
+        nombre.includes(filtro) ||
+        username.includes(filtro)
+      );
+    })
+    .forEach((u) => {
+      const id = getUserId(u);
+      const nombre   = u.nombre ?? u.nombreCompleto ?? "";
+      const username = u.username ?? u.usuario ?? "";
+      const rolId    = u.rolId ?? u.idRol ?? u.idRole;
+      const estado   = u.estado ?? "activo";
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${u.nombre}</td>
-        <td>${u.username}</td>
-        <td>${rolNombre(u.rolId)}</td>
+        <td>${nombre}</td>
+        <td>${username}</td>
+        <td>${rolNombre(rolId)}</td>
         <td>
-          <span class="badge-estado ${u.estado === "activo" ? "badge-activo" : "badge-inactivo"}">
-            ${u.estado}
+          <span class="badge-estado ${
+            estado === "activo" ? "badge-activo" : "badge-inactivo"
+          }">
+            ${estado}
           </span>
         </td>
         <td>
-          <button class="btn btn-sm btn-edit"   onclick="editarUsuario(${u.id})">
+          <button class="btn btn-sm btn-edit"   onclick="editarUsuario('${id}')">
             <i class="fas fa-pen"></i> Editar
           </button>
-          <button class="btn btn-sm btn-toggle" onclick="toggleEstado(${u.id})">
+          <button class="btn btn-sm btn-toggle" onclick="toggleEstado('${id}')">
             <i class="fas fa-power-off"></i>
           </button>
-          <button class="btn btn-sm btn-delete" onclick="eliminarUsuario(${u.id})">
+          <button class="btn btn-sm btn-delete" onclick="eliminarUsuario('${id}')">
             <i class="fas fa-trash"></i>
           </button>
         </td>
       `;
       usersTableBody.appendChild(tr);
     });
-    // Si no hay usuarios
+
   if (!usuarios.length) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -125,26 +167,26 @@ function renderUsuarios() {
     usersTableBody.appendChild(tr);
   }
 
-  renderResumen(); // actualiza totales si existen
-  actualizarPermisosRol(); // muestra permisos según rol seleccionado
+  renderResumen();
+  actualizarPermisosRol();
 }
 
-// Validación
+// VALIDACIÓN FORMULARIO
 
 function validarUsuario() {
-   // Campos obligatorios
-  if (!inputNombre.value.trim() ||
-      !inputUsername.value.trim() ||
-      !selectRol.value) {
-    userMsg.textContent = "Completa los campos obligatorios (*).";
+  if (
+    !inputNombre.value.trim() ||
+    !inputUsername.value.trim() ||
+    !selectRol.value
+  ) {
+    setMensaje("Completa los campos obligatorios (*).", "error");
     return false;
   }
-  
-  // Validación contraseña solo al crear
+
   if (!usuarioEditando) {
     const pass = (inputPassword.value || "").trim();
     if (pass.length < 6) {
-      userMsg.textContent = "La contraseña debe tener al menos 6 caracteres.";
+      setMensaje("La contraseña debe tener al menos 6 caracteres.", "error");
       return false;
     }
   }
@@ -152,108 +194,135 @@ function validarUsuario() {
   return true;
 }
 
-// Guardar / actualizar usuario
+// CREAR / ACTUALIZAR USUARIO (BACKEND)
 
-btnSaveUser.addEventListener("click", () => {
-  userMsg.textContent = "";
+btnSaveUser.addEventListener("click", async () => {
+  setMensaje("");
+
   if (!validarUsuario()) return;
 
-  const data = {
+  //  AJUSTAR nombres de campos según tu modelo LoopBack
+  const baseData = {
     nombre:   inputNombre.value.trim(),
     username: inputUsername.value.trim(),
     rolId:    selectRol.value,
     estado:   selectEstado.value,
-    email:    inputEmail.value.trim()
-    // Nota: podrías guardar pass hasheada si tuvieras backend
+    email:    inputEmail.value.trim() || null,
   };
 
-  if (usuarioEditando) {
-     // Actualizar usuario existente
-    usuarioEditando.nombre   = data.nombre;
-    usuarioEditando.username = data.username;
-    usuarioEditando.rolId    = data.rolId;
-    usuarioEditando.estado   = data.estado;
-    usuarioEditando.email    = data.email;
-    userMsg.textContent = "Usuario actualizado correctamente.";
-  } else {
-    // Crear nuevo usuario
-    usuarios.push({ id: Date.now(), ...data }); // id simple basado en tiempo
-    userMsg.textContent = "Usuario agregado correctamente.";
+  // Password solo se envía si se escribe algo
+  const pass = (inputPassword.value || "").trim();
+  if (pass) {
+    baseData.password = pass;
   }
 
-  saveUsers(); // persistir
-  renderUsuarios(); // refrescar tabla
+  try {
+    if (usuarioEditando) {
+      // UPDATE (PATCH /usuarios/{id})
+      const id = getUserId(usuarioEditando);
+      await api.patch(`${USUARIOS_PATH}/${id}`, baseData);
+      setMensaje("Usuario actualizado correctamente.", "ok");
+    } else {
+      // CREATE (POST /usuarios)
+      await api.post(USUARIOS_PATH, baseData);
+      setMensaje("Usuario agregado correctamente.", "ok");
+    }
+
+    // Refrescamos lista desde el backend
+    usuarioEditando = null;
+    inputPassword.value = "";
+    await cargarUsuarios();
+  } catch (err) {
+    console.error("Error guardando usuario:", err);
+    setMensaje("Error al guardar el usuario.", "error");
+  }
 });
 
-// Limpiar formulario (no borra usuarios)
+// LIMPIAR FORMULARIO
 
 btnClearUser.addEventListener("click", () => {
-  usuarioEditando     = null; // deja de editar
+  usuarioEditando     = null;
   inputNombre.value   = "";
   inputUsername.value = "";
   inputPassword.value = "";
   selectRol.value     = "";
   selectEstado.value  = "activo";
   inputEmail.value    = "";
-  userMsg.textContent = "";
+  setMensaje("");
   actualizarPermisosRol();
 });
 
-// Buscar en vivo
+// BÚSQUEDA EN TIEMPO REAL
 
 userSearch?.addEventListener("input", renderUsuarios);
 
-// Acciones desde la tabla
+// ACCIONES DE LA TABLA (EDITAR / ESTADO / ELIMINAR)
 
-// Cargar datos en formulario para editar
-window.editarUsuario = id => {
-  const u = usuarios.find(x => x.id === id);
+window.editarUsuario = (id) => {
+  const u = usuarios.find((x) => String(getUserId(x)) === String(id));
   if (!u) return;
+
   usuarioEditando       = u;
-  inputNombre.value     = u.nombre;
-  inputUsername.value   = u.username;
-  inputPassword.value   = ""; // no se muestra
-  selectRol.value       = u.rolId;
-  selectEstado.value    = u.estado;
+  inputNombre.value     = u.nombre ?? u.nombreCompleto ?? "";
+  inputUsername.value   = u.username ?? u.usuario ?? "";
+  inputPassword.value   = ""; // nunca mostramos la pass
+  selectRol.value       = u.rolId ?? u.idRol ?? u.idRole ?? "";
+  selectEstado.value    = u.estado ?? "activo";
   inputEmail.value      = u.email || "";
-  userMsg.textContent   = `Editando usuario: ${u.username}`;
+  setMensaje(`Editando usuario: ${inputUsername.value}`, "info");
   actualizarPermisosRol();
 };
 
-// Cambiar activo/inactivo
-window.toggleEstado = id => {
-  const u = usuarios.find(x => x.id === id);
+window.toggleEstado = async (id) => {
+  const u = usuarios.find((x) => String(getUserId(x)) === String(id));
   if (!u) return;
-  u.estado = u.estado === "activo" ? "inactivo" : "activo";
-  saveUsers();
-  renderUsuarios();
+
+  const nuevoEstado = (u.estado ?? "activo") === "activo" ? "inactivo" : "activo";
+
+  try {
+    await api.patch(`${USUARIOS_PATH}/${id}`, { estado: nuevoEstado });
+    await cargarUsuarios();
+  } catch (err) {
+    console.error("Error cambiando estado:", err);
+    setMensaje("No se pudo cambiar el estado del usuario.", "error");
+  }
 };
 
-// Eliminar usuario
-window.eliminarUsuario = id => {
-  const u = usuarios.find(x => x.id === id);
+window.eliminarUsuario = async (id) => {
+  const u = usuarios.find((x) => String(getUserId(x)) === String(id));
   if (!u) return;
-  if (!confirm(`¿Eliminar usuario "${u.username}"?`)) return;
-  usuarios = usuarios.filter(x => x.id !== id);
-  saveUsers();
-  renderUsuarios();
+
+  if (!confirm(`¿Eliminar usuario "${u.username ?? u.usuario}"?`)) return;
+
+  try {
+    await api.delete(`${USUARIOS_PATH}/${id}`);
+    await cargarUsuarios();
+    setMensaje("Usuario eliminado.", "ok");
+  } catch (err) {
+    console.error("Error eliminando usuario:", err);
+    setMensaje("No se pudo eliminar el usuario.", "error");
+  }
 };
 
-// Resumen (si hay elementos de resumen)
+
+// RESUMEN (OPCIONAL)
 
 function renderResumen() {
   const total   = usuarios.length;
-  const activos = usuarios.filter(u => u.estado === "activo").length;
+  const activos = usuarios.filter((u) => (u.estado ?? "activo") === "activo").length;
   const inact   = total - activos;
 
   const porRol = usuarios.reduce((acc, u) => {
-    const r = rolNombre(u.rolId);
-    acc[r] = (acc[r] || 0) + 1;
+    const rolId  = u.rolId ?? u.idRol ?? u.idRole;
+    const nombre = rolNombre(rolId);
+    acc[nombre] = (acc[nombre] || 0) + 1;
     return acc;
   }, {});
 
   const texto = Object.keys(porRol).length
-    ? Object.entries(porRol).map(([r, c]) => `${r}: ${c}`).join(" · ")
+    ? Object.entries(porRol)
+        .map(([r, c]) => `${r}: ${c}`)
+        .join(" · ")
     : "—";
 
   if (sumTotal)     sumTotal.textContent = total;
@@ -261,24 +330,29 @@ function renderResumen() {
   if (sumInactivos) sumInactivos.textContent = inact;
   if (sumPorRol)    sumPorRol.textContent = texto;
 }
-// Muestra permisos asociados al rol seleccionado (si existe contenedor)
+
+// PERMISOS DEL ROL SELECCIONADO (MISMO LOCALSTORAGE DE ROLES)
+
 function actualizarPermisosRol() {
   if (!permisosList) return;
   permisosList.innerHTML = "";
   const rol = getRol(selectRol.value);
-  if (!rol) return;
-  rol.permisos.forEach(p => {
+  if (!rol || !Array.isArray(rol.permisos)) return;
+  rol.permisos.forEach((p) => {
     const li = document.createElement("li");
     li.textContent = p;
     permisosList.appendChild(li);
   });
 }
-// Actualiza permisos al cambiar rol seleccionado
+
 selectRol.addEventListener("change", actualizarPermisosRol);
 
-// Inicialización
+// INICIALIZACIÓN
 
-cargarRolesSelect(); // llena el combo con roles guardados
-renderUsuarios(); // muestra usuarios guardados
+(async function init() {
+  cargarRolesSelect();
+  await cargarUsuarios();
+})();
+
 
 
