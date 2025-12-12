@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000"; // Aqui va la URL de cada quien del backend
+const API_BASE_URL = "http://localhost:3001"; // Aqui va la URL de cada quien del backend
 
 export const globalService = {
     

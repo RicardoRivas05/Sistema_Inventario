@@ -3,7 +3,7 @@ import { globalService } from "../services/global.service.js";
 
 let proveedoresData = [];
 let proveedorEditando = null;
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://localhost:3001';
 
 
 async function obtenerProveedores() {

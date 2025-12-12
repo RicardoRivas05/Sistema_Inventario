@@ -17,7 +17,7 @@ class Dashboard {
             
             const conectado = await dashboardAPI.verificarConexion();
             if (!conectado) {
-                this.mostrarError('No se pudo conectar con el servidor. Verifica que esté corriendo en http://localhost:3000');
+                this.mostrarError('No se pudo conectar con el servidor. Verifica que esté corriendo en http://localhost:3001');
                 return;
             }
 

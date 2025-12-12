@@ -66,3 +66,7 @@ typings/
 # Ignore the node_modules folder
 node_modules
 node_modules/
+
+# Evitar que se trackee el archivo de conexión y variables
+src/datasources/conn.datasource.ts
+BD.env
