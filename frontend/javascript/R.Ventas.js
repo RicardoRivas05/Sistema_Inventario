@@ -1,448 +1,483 @@
 // ======================================
-// CONFIGURACIÓN LOCALSTORAGE
+// REGISTRO DE VENTAS - R.Ventas.js
+// Conectado a LoopBack (Productos, Ventas, DetalleVentas)
 // ======================================
 
-// 👇 Usa aquí la MISMA clave que use tu módulo de Inventario
-const LS_PRODUCTOS = "megacels_productos"; // cámbiala si tu inventario usa otra
+// RUTAS DEL BACKEND (ajusta si cambian)
+const PRODUCTOS_PAGE_PATH   = "/productos/page";
+const VENTAS_PATH           = "/ventas";
+const DETALLE_VENTAS_PATH   = "/detalle-ventas";
 
-// Clave para el historial de ventas
-const LS_VENTAS = "megacels_ventas";
 
-// ======================================
 // ESTADO EN MEMORIA
-// ======================================
+
 
 let productos = [];  // inventario
-let ventas = [];     // historial de ventas
-let carrito = [];    // detalle de la venta actual
+let ventas    = [];  // historial
+let carrito   = [];  // venta actual
 
-// ======================================
+
 // REFERENCIAS AL DOM
-// ======================================
 
 // Formulario de venta
-const productoSelect = document.getElementById("productoSelect");
-const precioProducto = document.getElementById("precioProducto");
-const stockDisponible = document.getElementById("stockDisponible");
-const cantidadInput = document.getElementById("cantidadInput");
+const productoSelect   = document.getElementById("productoSelect");
+const precioProducto   = document.getElementById("precioProducto");
+const stockDisponible  = document.getElementById("stockDisponible");
+const cantidadInput    = document.getElementById("cantidadInput");
 
 // Tablas
-const tbodyCarrito = document.getElementById("tbodyCarrito");
-const tbodyProductos = document.getElementById("tbodyProductos");
-const tbodyHistorial = document.getElementById("tbodyHistorial");
+const tbodyCarrito     = document.getElementById("tbodyCarrito");
+const tbodyProductos   = document.getElementById("tbodyProductos");
+const tbodyHistorial   = document.getElementById("tbodyHistorial");
 
-// Footer de venta
-const totalVentaSpan = document.getElementById("totalVenta");
-const ventaMessage = document.getElementById("venta-message");
+// Footer venta
+const totalVentaSpan   = document.getElementById("totalVenta");
+const ventaMessage     = document.getElementById("venta-message");
 
 // Botones
-const btnAgregar = document.getElementById("btnAgregar");
-const btnConfirmarVenta = document.getElementById("btnConfirmarVenta");
-const btnLimpiarCarrito = document.getElementById("btnLimpiarCarrito");
-const btnNuevaVenta = document.getElementById("btn-nueva-venta");
+const btnAgregar           = document.getElementById("btnAgregar");
+const btnConfirmarVenta    = document.getElementById("btnConfirmarVenta");
+const btnLimpiarCarrito    = document.getElementById("btnLimpiarCarrito");
+const btnNuevaVenta        = document.getElementById("btn-nueva-venta");
 
-// Buscador de historial
+// Buscador historial
 const historialSearchInput = document.getElementById("historial-search");
 
-// ======================================
-// UTILIDADES
-// ======================================
+
+// MENSAJES
 
 function mostrarMensajeVenta(texto, tipo = "info") {
-    if (!ventaMessage) return;
-    ventaMessage.textContent = texto || "";
+  if (!ventaMessage) return;
+  ventaMessage.textContent = texto || "";
 
-    if (tipo === "error") {
-        ventaMessage.style.color = "#dc2626"; // rojo
-    } else if (tipo === "ok") {
-        ventaMessage.style.color = "#16a34a"; // verde
+  if (tipo === "error") {
+    ventaMessage.style.color = "#dc2626";   // rojo
+  } else if (tipo === "ok") {
+    ventaMessage.style.color = "#16a34a";   // verde
+  } else {
+    ventaMessage.style.color = "#f97316";   // naranja
+  }
+}
+
+// CARGA DESDE EL BACKEND
+
+async function cargarProductos() {
+  try {
+    // /productos/page?page=1&limit=100
+    const resp = await api.get(`${PRODUCTOS_PAGE_PATH}?page=1&limit=100`);
+
+    // Dependiendo de cómo responda tu API:
+    //  - si devuelve array directo -> productos = resp
+    //  - si devuelve {data:[...]}   -> productos = resp.data
+    //  - si devuelve {items:[...]}  -> productos = resp.items
+    if (Array.isArray(resp)) {
+      productos = resp;
+    } else if (resp && Array.isArray(resp.data)) {
+      productos = resp.data;
+    } else if (resp && Array.isArray(resp.items)) {
+      productos = resp.items;
     } else {
-        ventaMessage.style.color = "#f97316"; // naranja
+      productos = [];
     }
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+    productos = [];
+  }
+
+  renderProductosSelect();
+  renderTablaProductos();
 }
 
-function guardarProductos() {
-    localStorage.setItem(LS_PRODUCTOS, JSON.stringify(productos));
+async function cargarHistorialVentas() {
+  try {
+    // GET /ventas -> array de ventas
+    ventas = await api.get(VENTAS_PATH);
+  } catch (err) {
+    console.error("Error cargando ventas:", err);
+    ventas = [];
+  }
+
+  renderHistorialVentas();
 }
 
-function guardarVentas() {
-    localStorage.setItem(LS_VENTAS, JSON.stringify(ventas));
-}
-
-// ======================================
-// CARGA INICIAL DE DATOS
-// ======================================
-
-function inicializarDatos() {
-    // 👉 Solo lee productos, NO crea ninguno
-    const productosLS = localStorage.getItem(LS_PRODUCTOS);
-    if (productosLS) {
-        productos = JSON.parse(productosLS);
-    } else {
-        productos = []; // sin productos hasta que inventario los cree
-    }
-
-    const ventasLS = localStorage.getItem(LS_VENTAS);
-    if (ventasLS) {
-        ventas = JSON.parse(ventasLS);
-    } else {
-        ventas = [];
-        guardarVentas();
-    }
-}
-
-// ======================================
-// RENDER: SELECT DE PRODUCTOS
-// ======================================
+// SELECT DE PRODUCTOS
 
 function renderProductosSelect() {
-    if (!productoSelect) return;
+  if (!productoSelect) return;
 
-    productoSelect.innerHTML = "";
+  productoSelect.innerHTML = "";
 
-    // ⚠ Si no hay productos, desactivamos el formulario
-    if (productos.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "Sin productos en inventario";
-        productoSelect.appendChild(option);
+  if (!productos.length) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "Sin productos en inventario";
+    productoSelect.appendChild(option);
 
-        productoSelect.disabled = true;
-        if (btnAgregar) btnAgregar.disabled = true;
-        if (btnConfirmarVenta) btnConfirmarVenta.disabled = true;
+    productoSelect.disabled = true;
+    btnAgregar.disabled = true;
+    btnConfirmarVenta.disabled = true;
 
-        if (precioProducto) precioProducto.value = "L 0.00";
-        if (stockDisponible) stockDisponible.value = "0";
+    precioProducto.value = "L 0.00";
+    stockDisponible.value = "0";
 
-        mostrarMensajeVenta("No hay productos cargados. Regístralos primero en Inventario.", "info");
-        return;
-    }
+    mostrarMensajeVenta(
+      "No hay productos registrados. Crea productos primero en Inventario.",
+      "info"
+    );
+    return;
+  }
 
-    // Si hay productos, habilitamos todo
-    productoSelect.disabled = false;
-    if (btnAgregar) btnAgregar.disabled = false;
-    if (btnConfirmarVenta) btnConfirmarVenta.disabled = false;
+  productoSelect.disabled = false;
+  btnAgregar.disabled = false;
+  btnConfirmarVenta.disabled = false;
 
-    productos.forEach(prod => {
-        const option = document.createElement("option");
-        option.value = String(prod.id);
-        option.textContent = prod.nombre;
-        productoSelect.appendChild(option);
-    });
+  productos.forEach((p) => {
+    const option = document.createElement("option");
+    // Ajusta según tu modelo: id / idProducto / codigoProducto...
+    option.value = String(p.id ?? p.idProducto);
+    option.textContent = p.nombre ?? p.descripcion ?? `Producto ${option.value}`;
+    productoSelect.appendChild(option);
+  });
 
-    actualizarInfoProducto();
+  actualizarInfoProducto();
 }
 
 function actualizarInfoProducto() {
-    if (!productoSelect || productoSelect.disabled) {
-        if (precioProducto) precioProducto.value = "L 0.00";
-        if (stockDisponible) stockDisponible.value = "0";
-        return;
-    }
+  if (!productoSelect || productoSelect.disabled) {
+    precioProducto.value = "L 0.00";
+    stockDisponible.value = "0";
+    return;
+  }
 
-    const id = parseInt(productoSelect.value, 10);
-    const prod = productos.find(p => p.id === id);
+  const idSel = Number(productoSelect.value);
+  const prod = productos.find(
+    (p) => (p.id ?? p.idProducto) === idSel
+  );
 
-    if (prod) {
-        if (precioProducto) precioProducto.value = `L ${prod.precio.toFixed(2)}`;
-        if (stockDisponible) stockDisponible.value = String(prod.stock);
-    } else {
-        if (precioProducto) precioProducto.value = "L 0.00";
-        if (stockDisponible) stockDisponible.value = "0";
-    }
+  if (prod) {
+    // Ajusta a tus campos reales:
+    const precio = Number(
+      prod.precio ?? prod.precioVenta ?? prod.precioUnitario ?? 0
+    );
+    const stock = Number(
+      prod.stock ?? prod.existencia ?? prod.cantidad ?? 0
+    );
+
+    precioProducto.value = `L ${precio.toFixed(2)}`;
+    stockDisponible.value = String(stock);
+  } else {
+    precioProducto.value = "L 0.00";
+    stockDisponible.value = "0";
+  }
 }
 
-// ======================================
-// CARRITO: AGREGAR / ELIMINAR / RENDER
-// ======================================
-
-function agregarAlCarrito() {
-    mostrarMensajeVenta("");
-
-    if (!productoSelect || productoSelect.disabled) {
-        mostrarMensajeVenta("No hay productos en inventario para vender.", "error");
-        return;
-    }
-
-    const id = parseInt(productoSelect.value, 10);
-    const prod = productos.find(p => p.id === id);
-    const cantidad = parseInt(cantidadInput.value, 10);
-
-    if (!prod) {
-        mostrarMensajeVenta("Selecciona un producto válido.", "error");
-        return;
-    }
-
-    if (isNaN(cantidad) || cantidad <= 0) {
-        mostrarMensajeVenta("Ingresa una cantidad válida.", "error");
-        return;
-    }
-
-    if (cantidad > prod.stock) {
-        mostrarMensajeVenta("La cantidad supera el stock disponible.", "error");
-        return;
-    }
-
-    const itemExistente = carrito.find(item => item.id === id);
-
-    if (itemExistente) {
-        if (itemExistente.cantidad + cantidad > prod.stock) {
-            mostrarMensajeVenta("La cantidad total excede el stock.", "error");
-            return;
-        }
-        itemExistente.cantidad += cantidad;
-    } else {
-        carrito.push({
-            id: prod.id,
-            nombre: prod.nombre,
-            precio: prod.precio,
-            cantidad: cantidad
-        });
-    }
-
-    renderCarrito();
-    mostrarMensajeVenta("Producto agregado al carrito.", "ok");
-}
-
-function eliminarDelCarrito(idProducto) {
-    carrito = carrito.filter(item => item.id !== idProducto);
-    renderCarrito();
-}
+// CARRITO
 
 function calcularTotalCarrito() {
-    return carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
+  return carrito.reduce((t, item) => t + item.precio * item.cantidad, 0);
 }
 
 function renderCarrito() {
-    if (!tbodyCarrito) return;
+  if (!tbodyCarrito) return;
+  tbodyCarrito.innerHTML = "";
 
-    tbodyCarrito.innerHTML = "";
+  carrito.forEach((item) => {
+    const tr = document.createElement("tr");
 
-    carrito.forEach(item => {
-        const tr = document.createElement("tr");
+    const tdNombre = document.createElement("td");
+    tdNombre.textContent = item.nombre;
 
-        const tdNombre = document.createElement("td");
-        tdNombre.textContent = item.nombre;
+    const tdCantidad = document.createElement("td");
+    tdCantidad.textContent = String(item.cantidad);
 
-        const tdCantidad = document.createElement("td");
-        tdCantidad.textContent = String(item.cantidad);
+    const tdPrecio = document.createElement("td");
+    tdPrecio.textContent = `L ${item.precio.toFixed(2)}`;
 
-        const tdPrecio = document.createElement("td");
-        tdPrecio.textContent = `L ${item.precio.toFixed(2)}`;
+    const tdSubtotal = document.createElement("td");
+    tdSubtotal.textContent = `L ${(item.precio * item.cantidad).toFixed(2)}`;
 
-        const tdSubtotal = document.createElement("td");
-        tdSubtotal.textContent = `L ${(item.precio * item.cantidad).toFixed(2)}`;
+    const tdAccion = document.createElement("td");
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.classList.add("btn", "btn-secondary", "btn-sm", "btn-row");
+    btnEliminar.addEventListener("click", () => eliminarDelCarrito(item.idProd));
+    tdAccion.appendChild(btnEliminar);
 
-        const tdAccion = document.createElement("td");
-        const btnEliminar = document.createElement("button");
-        btnEliminar.textContent = "Eliminar";
-        btnEliminar.classList.add("btn", "btn-secondary", "btn-sm", "btn-row");
-        btnEliminar.addEventListener("click", () => eliminarDelCarrito(item.id));
-        tdAccion.appendChild(btnEliminar);
+    tr.appendChild(tdNombre);
+    tr.appendChild(tdCantidad);
+    tr.appendChild(tdPrecio);
+    tr.appendChild(tdSubtotal);
+    tr.appendChild(tdAccion);
 
-        tr.appendChild(tdNombre);
-        tr.appendChild(tdCantidad);
-        tr.appendChild(tdPrecio);
-        tr.appendChild(tdSubtotal);
-        tr.appendChild(tdAccion);
+    tbodyCarrito.appendChild(tr);
+  });
 
-        tbodyCarrito.appendChild(tr);
-    });
+  const total = calcularTotalCarrito();
+  totalVentaSpan.textContent = `L ${total.toFixed(2)}`;
+}
 
-    const total = calcularTotalCarrito();
-    if (totalVentaSpan) {
-        totalVentaSpan.textContent = `L ${total.toFixed(2)}`;
+function agregarAlCarrito() {
+  mostrarMensajeVenta("");
+
+  if (!productoSelect || productoSelect.disabled) {
+    mostrarMensajeVenta("No hay productos para vender.", "error");
+    return;
+  }
+
+  const idSel = Number(productoSelect.value);
+  const prod = productos.find(
+    (p) => (p.id ?? p.idProducto) === idSel
+  );
+  const cantidad = Number(cantidadInput.value);
+
+  if (!prod) {
+    mostrarMensajeVenta("Selecciona un producto válido.", "error");
+    return;
+  }
+  if (!cantidad || cantidad <= 0) {
+    mostrarMensajeVenta("Ingresa una cantidad válida.", "error");
+    return;
+  }
+
+  const stock = Number(
+    prod.stock ?? prod.existencia ?? prod.cantidad ?? 0
+  );
+  const precio = Number(
+    prod.precio ?? prod.precioVenta ?? prod.precioUnitario ?? 0
+  );
+
+  if (cantidad > stock) {
+    mostrarMensajeVenta("La cantidad supera el stock disponible.", "error");
+    return;
+  }
+
+  const idProd = prod.id ?? prod.idProducto;
+
+  const itemExistente = carrito.find((i) => i.idProd === idProd);
+  if (itemExistente) {
+    if (itemExistente.cantidad + cantidad > stock) {
+      mostrarMensajeVenta("La cantidad total excede el stock.", "error");
+      return;
     }
+    itemExistente.cantidad += cantidad;
+  } else {
+    carrito.push({
+      idProd,
+      nombre: prod.nombre ?? prod.descripcion ?? `Producto ${idProd}`,
+      precio,
+      cantidad,
+    });
+  }
+
+  renderCarrito();
+  mostrarMensajeVenta("Producto agregado al carrito.", "ok");
+}
+
+function eliminarDelCarrito(idProd) {
+  carrito = carrito.filter((i) => i.idProd !== idProd);
+  renderCarrito();
 }
 
 function limpiarCarrito() {
-    carrito = [];
-    renderCarrito();
-    mostrarMensajeVenta("Carrito limpiado.", "info");
+  carrito = [];
+  renderCarrito();
+  mostrarMensajeVenta("Carrito limpiado.", "info");
 }
 
 function nuevaVenta() {
-    carrito = [];
-    renderCarrito();
-    mostrarMensajeVenta("Nueva venta iniciada.", "info");
+  carrito = [];
+  renderCarrito();
+  mostrarMensajeVenta("Nueva venta iniciada.", "info");
 }
 
-// ======================================
-// INVENTARIO: TABLA DE PRODUCTOS
-// ======================================
+// TABLA DE INVENTARIO
 
 function renderTablaProductos() {
-    if (!tbodyProductos) return;
+  if (!tbodyProductos) return;
+  tbodyProductos.innerHTML = "";
 
-    tbodyProductos.innerHTML = "";
+  if (!productos.length) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.textContent = "Sin productos en inventario.";
+    td.style.fontSize = "12px";
+    td.style.color = "#6b7280";
+    tr.appendChild(td);
+    tbodyProductos.appendChild(tr);
+    return;
+  }
 
-    if (productos.length === 0) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 3;
-        td.textContent = "Sin productos en inventario.";
-        td.style.fontSize = "12px";
-        td.style.color = "#6b7280";
-        tr.appendChild(td);
-        tbodyProductos.appendChild(tr);
-        return;
-    }
+  productos.forEach((prod) => {
+    const tr = document.createElement("tr");
 
-    productos.forEach(prod => {
-        const tr = document.createElement("tr");
+    const precio = Number(
+      prod.precio ?? prod.precioVenta ?? prod.precioUnitario ?? 0
+    );
+    const stock = Number(
+      prod.stock ?? prod.existencia ?? prod.cantidad ?? 0
+    );
 
-        const tdNombre = document.createElement("td");
-        tdNombre.textContent = prod.nombre;
+    const tdNombre = document.createElement("td");
+    tdNombre.textContent = prod.nombre ?? prod.descripcion ?? "Producto";
 
-        const tdPrecio = document.createElement("td");
-        tdPrecio.textContent = `L ${prod.precio.toFixed(2)}`;
+    const tdPrecio = document.createElement("td");
+    tdPrecio.textContent = `L ${precio.toFixed(2)}`;
 
-        const tdStock = document.createElement("td");
-        tdStock.textContent = String(prod.stock);
+    const tdStock = document.createElement("td");
+    tdStock.textContent = String(stock);
 
-        tr.appendChild(tdNombre);
-        tr.appendChild(tdPrecio);
-        tr.appendChild(tdStock);
-
-        tbodyProductos.appendChild(tr);
-    });
+    tr.appendChild(tdNombre);
+    tr.appendChild(tdPrecio);
+    tr.appendChild(tdStock);
+    tbodyProductos.appendChild(tr);
+  });
 }
 
-// ======================================
 // HISTORIAL DE VENTAS
-// ======================================
 
 function renderHistorialVentas(lista = null) {
-    if (!tbodyHistorial) return;
+  if (!tbodyHistorial) return;
 
-    const origen = Array.isArray(lista) ? lista : ventas;
+  const origen = Array.isArray(lista) ? lista : ventas;
+  tbodyHistorial.innerHTML = "";
 
-    tbodyHistorial.innerHTML = "";
+  if (!origen.length) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 4;
+    td.textContent = "Aún no hay ventas registradas.";
+    td.style.fontSize = "12px";
+    td.style.color = "#6b7280";
+    tr.appendChild(td);
+    tbodyHistorial.appendChild(tr);
+    return;
+  }
 
-    if (origen.length === 0) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 4;
-        td.textContent = "Aún no hay ventas registradas.";
-        td.style.fontSize = "12px";
-        td.style.color = "#6b7280";
-        tr.appendChild(td);
-        tbodyHistorial.appendChild(tr);
-        return;
-    }
+  origen.forEach((venta) => {
+    const tr = document.createElement("tr");
 
-    origen.forEach(venta => {
-        const tr = document.createElement("tr");
+    const tdId = document.createElement("td");
+    // En tu modelo el id es idVenta
+    tdId.textContent = String(venta.idVenta ?? venta.id);
 
-        const tdId = document.createElement("td");
-        tdId.textContent = String(venta.idVenta);
+    const tdFecha = document.createElement("td");
+    tdFecha.textContent = String(venta.fechaVenta ?? venta.createdAt ?? "");
 
-        const tdFecha = document.createElement("td");
-        tdFecha.textContent = venta.fecha;
+    const tdDetalle = document.createElement("td");
+    tdDetalle.textContent = venta.estado ?? "COMPLETADA";
 
-        const tdDetalle = document.createElement("td");
-        tdDetalle.textContent = venta.items
-            .map(i => `${i.nombre} (x${i.cantidad})`)
-            .join(", ");
+    const tdTotal = document.createElement("td");
+    const total = Number(venta.total ?? 0);
+    tdTotal.textContent = `L ${total.toFixed(2)}`;
 
-        const tdTotal = document.createElement("td");
-        tdTotal.textContent = `L ${venta.total.toFixed(2)}`;
-
-        tr.appendChild(tdId);
-        tr.appendChild(tdFecha);
-        tr.appendChild(tdDetalle);
-        tr.appendChild(tdTotal);
-
-        tbodyHistorial.appendChild(tr);
-    });
+    tr.appendChild(tdId);
+    tr.appendChild(tdFecha);
+    tr.appendChild(tdDetalle);
+    tr.appendChild(tdTotal);
+    tbodyHistorial.appendChild(tr);
+  });
 }
 
 function filtrarHistorial() {
-    const q = (historialSearchInput?.value || "").trim().toLowerCase();
-    if (!q) {
-        renderHistorialVentas();
-        return;
-    }
+  const q = (historialSearchInput?.value || "").trim().toLowerCase();
+  if (!q) {
+    renderHistorialVentas();
+    return;
+  }
 
-    const filtradas = ventas.filter(v => {
-        const idStr = String(v.idVenta).toLowerCase();
-        const fechaStr = String(v.fecha).toLowerCase();
-        return idStr.includes(q) || fechaStr.includes(q);
-    });
+  const filtradas = ventas.filter((v) => {
+    const idStr = String(v.idVenta ?? v.id).toLowerCase();
+    const fechaStr = String(
+      v.fechaVenta ?? v.createdAt ?? ""
+    ).toLowerCase();
+    return idStr.includes(q) || fechaStr.includes(q);
+  });
 
-    renderHistorialVentas(filtradas);
+  renderHistorialVentas(filtradas);
 }
 
-// ======================================
-// CONFIRMAR VENTA
-// ======================================
+// CONFIRMAR VENTA (POST /ventas + /detalle-ventas)
 
-function confirmarVenta() {
-    mostrarMensajeVenta("");
+async function confirmarVenta() {
+  mostrarMensajeVenta("");
 
-    if (carrito.length === 0) {
-        mostrarMensajeVenta("No hay productos en el carrito.", "error");
-        return;
+  if (!carrito.length) {
+    mostrarMensajeVenta("No hay productos en el carrito.", "error");
+    return;
+  }
+
+  // Verificar stock actual
+  for (const item of carrito) {
+    const prod = productos.find(
+      (p) => (p.id ?? p.idProducto) === item.idProd
+    );
+    const stock = Number(
+      prod?.stock ?? prod?.existencia ?? prod?.cantidad ?? 0
+    );
+    if (!prod || item.cantidad > stock) {
+      mostrarMensajeVenta(`Stock insuficiente para: ${item.nombre}`, "error");
+      return;
     }
+  }
 
-    // Verificar stock actual
+  const total = calcularTotalCarrito();
+
+  // Payload de venta según tu esquema de Swagger
+  const ventaPayload = {
+    fechaVenta: new Date().toISOString(),
+    total: total,
+    idCliente: 1,          // Cambia esto cuando tengas cliente real
+    idUsuario: 1,          // Id del usuario logueado
+    estado: "COMPLETADA",
+  };
+
+  try {
+    // 1. Crear la venta principal
+    const nuevaVenta = await api.post(VENTAS_PATH, ventaPayload);
+
+    // 2. Crear los detalles de la venta
     for (const item of carrito) {
-        const prod = productos.find(p => p.id === item.id);
-        if (!prod || item.cantidad > prod.stock) {
-            mostrarMensajeVenta(`Stock insuficiente para: ${item.nombre}`, "error");
-            return;
-        }
+      //  Ajusta estos nombres a lo que te muestre Swagger
+      const detallePayload = {
+        idVenta: nuevaVenta.idVenta,        // o ventaId
+        idProducto: item.idProd,            // o productoId
+        cantidad: item.cantidad,
+        precioUnitario: item.precio,
+        subtotal: item.precio * item.cantidad,
+      };
+      await api.post(DETALLE_VENTAS_PATH, detallePayload);
     }
-
-    // Descontar stock
-    carrito.forEach(item => {
-        const prod = productos.find(p => p.id === item.id);
-        if (prod) prod.stock -= item.cantidad;
-    });
-    guardarProductos();
-    renderTablaProductos();
-
-    const total = calcularTotalCarrito();
-    const venta = {
-        idVenta: Date.now(),
-        fecha: new Date().toLocaleString(),
-        items: JSON.parse(JSON.stringify(carrito)),
-        total: total
-    };
-
-    ventas.push(venta);
-    guardarVentas();
-    renderHistorialVentas();
 
     carrito = [];
     renderCarrito();
+    await cargarProductos();
+    await cargarHistorialVentas();
 
     mostrarMensajeVenta("Venta registrada correctamente.", "ok");
+  } catch (err) {
+    console.error("Error al registrar la venta:", err);
+    mostrarMensajeVenta("Error al registrar la venta.", "error");
+  }
 }
 
-// ======================================
 // EVENTOS
-// ======================================
 
 if (productoSelect) {
-    productoSelect.addEventListener("change", actualizarInfoProducto);
+  productoSelect.addEventListener("change", actualizarInfoProducto);
 }
-if (btnAgregar) btnAgregar.addEventListener("click", agregarAlCarrito);
+if (btnAgregar)        btnAgregar.addEventListener("click", agregarAlCarrito);
 if (btnConfirmarVenta) btnConfirmarVenta.addEventListener("click", confirmarVenta);
 if (btnLimpiarCarrito) btnLimpiarCarrito.addEventListener("click", limpiarCarrito);
-if (btnNuevaVenta) btnNuevaVenta.addEventListener("click", nuevaVenta);
+if (btnNuevaVenta)     btnNuevaVenta.addEventListener("click", nuevaVenta);
 if (historialSearchInput) {
-    historialSearchInput.addEventListener("input", filtrarHistorial);
+  historialSearchInput.addEventListener("input", filtrarHistorial);
 }
 
-// ======================================
 // INICIALIZACIÓN
-// ======================================
 
-(function init() {
-    inicializarDatos();
-    renderProductosSelect();
-    renderTablaProductos();
-    renderHistorialVentas();
-    renderCarrito();
+(async function init() {
+  await cargarProductos();
+  await cargarHistorialVentas();
+  renderCarrito();
 })();
