@@ -1,5 +1,5 @@
 .main-header {
-    background-color: #3598db; /* Azul principal */
+    background-color: #3598db; 
     color: white;
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -9,7 +9,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px; /* Ancho máximo del contenido */
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -36,25 +36,20 @@
 }
 
 .main-footer {
-    /* Estilos de fondo y borde */
     background-color: #f8f9fa;
     border-top: 1px solid #dee2e6;
-    
-    /* Contenido interno */
-    padding: 15px 20px; /* Padding interno */
-    width: 100%; /* Ocupa el 100% del ancho */
-    box-sizing: border-box; /* Asegura que el padding no desborde el ancho */
-
-    /* Estilos del texto */
+    padding: 15px 20px; 
+    width: 100%; 
+    box-sizing: border-box; 
     text-align: left; 
     font-size: 12px;
     color: #6c757d;
     
-    /* Elimina el position: absolute/fixed que causaba el problema */
+
 }
 
 .main-footer p {
-    margin: 0; /* Elimina márgenes extra del párrafo */
+    margin: 0; 
 }
 
 
@@ -62,7 +57,6 @@
     padding: 20px;
     display: flex;
     justify-content: center;
-    /* Ajusta min-height para dejar espacio al header y footer si es necesario */
     min-height: calc(100vh - 100px); 
 }
 
@@ -72,7 +66,7 @@
     border-radius: 4px;
     padding: 30px;
     width: 100%;
-    max-width: 800px; /* Un ancho más grande para el formulario de registro */
+    max-width: 800px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -92,7 +86,7 @@
 }
 
 .form-row label {
-    width: 150px; /* Ancho fijo para las etiquetas */
+    width: 150px; 
     text-align: right;
     padding-right: 20px;
     font-weight: bold;
@@ -103,43 +97,42 @@
 .form-row input[type="text"],
 .form-row input[type="password"],
 .form-row select {
-    flex-grow: 1; /* El input ocupa el resto del espacio */
+    flex-grow: 1; 
     padding: 8px 10px;
     border: 1px solid #ced4da;
     border-radius: 4px;
     font-size: 14px;
-    max-width: 300px; /* Limita el ancho de los inputs para que no se estiren demasiado */
+    max-width: 300px; 
 }
 
-/* Estilo específico para el campo de Rol */
+
 .form-row select {
     padding: 8px 10px;
-    height: 35px; /* Asegura que el alto sea similar al de los inputs */
+    height: 35px;
 }
 
 
 .form-photo-upload {
-    /* Separador visual para el área de foto */
     padding-top: 20px;
     margin-top: 20px;
     border-top: 1px solid #dee2e6;
-    align-items: flex-start; /* Alinea los ítems de la fila al inicio */
+    align-items: flex-start; 
 }
 
 .avatar-placeholder {
     width: 150px;
-    height: 150px; /* Definimos una altura para que la imagen sea cuadrada */
+    height: 150px; 
     text-align: center;
     margin-right: 20px;
-    overflow: hidden; /* Oculta partes de la imagen si se sale de los bordes */
-    border-radius: 50%; /* Opcional: para hacerlo circular */
-    border: 1px solid #ced4da; /* Borde suave */
+    overflow: hidden; 
+    border-radius: 50%;
+    border: 1px solid #ced4da; 
 }
 
 .avatar-preview {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+    object-fit: cover; 
 }
 
 .btn-file-select {
@@ -167,7 +160,7 @@
 
 .form-actions {
     display: flex;
-    justify-content: center; /* Centra los botones en la parte inferior */
+    justify-content: center; 
     padding-top: 25px;
     border-top: 1px solid #dee2e6;
     margin-top: 25px;
