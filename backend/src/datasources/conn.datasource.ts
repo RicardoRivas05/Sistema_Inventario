@@ -1,28 +1,26 @@
-import { inject, lifeCycleObserver } from '@loopback/core';
+import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-// HOST = localhost
 const config = {
   name: 'conn',
   connector: 'mssql',
-  database: process.env.NAME_DB || 'celulares',
-  port: parseInt(process.env.PORT_DB || '1433'),
-  host: process.env.HOST_DB || 'YAHIRFER2003',
-  user: process.env.USER_DB || 'sa',
-  password: process.env.PASSWORD_DB || '12345',
-  requestTimeout: 30000,
+  host: process.env.DB_SERVER || 'YANQUEL',
+  port: Number(process.env.DB_PORT) || 1433,
+  database: process.env.DB_NAME || 'celulares',
+  user: process.env.DB_USER || 'sa',
+  password: process.env.DB_PASSWORD || '12345678',
   options: {
-    encrypt: false,
-    trustServerCertificate: true,
+    encrypt: process.env.DB_ENCRYPT === 'true',
+    trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
+    trustedConnection: process.env.DB_TRUSTED_CONNECTION === 'true',
   },
 };
 
-
 @lifeCycleObserver('datasource')
-export class ConnDataSource extends juggler.DataSource {
+export class ConnDataSource extends juggler.DataSource implements LifeCycleObserver {
   static dataSourceName = 'conn';
   static readonly defaultConfig = config;
 
